@@ -1,7 +1,7 @@
 import express, { Application } from 'express';
 import cors from 'cors';
 import { userRouter } from './api-user';
-
+import { bookRouter } from './api-book'; 
 
 export class App {
   private app: Application = express();
@@ -28,7 +28,7 @@ export class App {
 
   private setRouters(): void {
     this.app.use('/api/users', userRouter);
-
+    this.app.use('/api/books', bookRouter); 
   }
 
   public run(): void {
