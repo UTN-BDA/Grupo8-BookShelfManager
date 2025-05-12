@@ -7,8 +7,14 @@ export class UserRouter extends BaseRouter<UserController> {
   }
 
   protected setRoutes(): void {
-    // this.router.post('/', 
-    //   (req, res) => this.controller.createUser(req, res)
-    // ); 
+    // Auth routes
+    this.router.post('/register', (req, res) => this.controller.registerUser(req, res));
+    this.router.post('/login', (req, res) => this.controller.loginUser(req, res));
+    
+    // CRUD routes
+    this.router.get('/', (req, res) => this.controller.getAllUsers(req, res));
+    this.router.get('/:id', (req, res) => this.controller.getUserById(req, res));
+    this.router.put('/:id', (req, res) => this.controller.updateUser(req, res));
+    this.router.delete('/:id', (req, res) => this.controller.deleteUser(req, res));
   }
 }
