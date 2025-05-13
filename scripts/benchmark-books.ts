@@ -10,6 +10,7 @@ async function performBookJoins(iterations: number) {
   let successCount = 0;
   let errorCount = 0;
   
+  // Create initial sample book
   const sampleBook = await prisma.book.create({
     data: {
       title: "Performance Testing Book",
@@ -31,13 +32,18 @@ async function performBookJoins(iterations: number) {
       }
       
       try {
-        await prisma.$queryRaw`
-          SELECT b.* 
-          FROM "Book" b
-          WHERE b.language = 'English'
-          AND b.pages > 100
-          LIMIT 10
-        `;
+        // Create a book with dynamic data based on iteration
+        await prisma.book.create({
+          data: {
+            title: `Test Book ${i+1}`,
+            author: `Test Author ${i % 5 + 1}`,
+            isbn: `ISBN-TEST-${Date.now()}-${i}`,
+            pages: 100 + (i % 400),
+            publisher: `Publisher ${i % 10 + 1}`,
+            language: i % 3 === 0 ? "English" : i % 3 === 1 ? "Spanish" : "French",
+            publishedAt: new Date(Date.now() - (i * 86400000))
+          }
+        });
         
         successCount++;
       } catch (err) {
@@ -50,7 +56,6 @@ async function performBookJoins(iterations: number) {
       }
     }
   } finally {
-    await prisma.book.delete({ where: { id: sampleBook.id } });
   }
   
   const endTime = performance.now();
@@ -67,7 +72,7 @@ Avg operations/sec: ${(successCount / duration).toFixed(2)}
   `);
 }
 
-performBookJoins(500000)
+performBookJoins(500000) // Crear 500mil libros
   .catch(e => {
     console.error("Script failed:", e);
   })
