@@ -10,7 +10,13 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
-    "join-books": "npx ts-node scripts/benchmark-books.ts"
+    "join-books": "npx ts-node scripts/benchmark-books.ts",
+    "search:btree": "npx ts-node scripts/tests/btree-index.ts",
+    "search:hash": "npx ts-node scripts/tests/hash-index.ts",
+    "search:bitmap": "npx ts-node scripts/tests/bitmap-index.ts",
+    "search:fulltext": "npx ts-node scripts/tests/fulltext-index.ts",
+    "search:spatial": "npx ts-node scripts/tests/fulltext-index.ts",
+    "search:composite": "npx ts-node scripts/tests/fulltext-index.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
