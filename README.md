@@ -67,7 +67,7 @@ Para el **Producto Mínimo Viable**, solo se incluyen las tablas necesarias para
    ```
 5. Accede a la aplicación en el navegador en `http://localhost:3000`.
 
-##Indices Actividad 
+## Indices Actividad 
 
 1. hacer un pull del repositorio
 2. configurar el .env como esta en .env.template pero con sus datos del postgres
