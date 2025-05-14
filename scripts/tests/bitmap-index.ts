@@ -1,10 +1,6 @@
 import { prisma } from '../../src/config';
 import { performance } from 'perf_hooks';
 
-/**
- * Bitmap Index Test
- * Bitmap indexes are efficient for low-cardinality columns and complex conditions
- */
 async function createBitmapFriendlyIndexes() {
   console.log('Creating bitmap-friendly indexes...');
   try {

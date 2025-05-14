@@ -10,7 +10,6 @@ async function performBookJoins(iterations: number) {
   let successCount = 0;
   let errorCount = 0;
   
-  // Create initial sample book
   const sampleBook = await prisma.book.create({
     data: {
       title: "Performance Testing Book",
@@ -32,7 +31,6 @@ async function performBookJoins(iterations: number) {
       }
       
       try {
-        // Create a book with dynamic data based on iteration
         await prisma.book.create({
           data: {
             title: `Test Book ${i+1}`,

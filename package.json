@@ -15,8 +15,8 @@
     "search:hash": "npx ts-node scripts/tests/hash-index.ts",
     "search:bitmap": "npx ts-node scripts/tests/bitmap-index.ts",
     "search:fulltext": "npx ts-node scripts/tests/fulltext-index.ts",
-    "search:spatial": "npx ts-node scripts/tests/fulltext-index.ts",
-    "search:composite": "npx ts-node scripts/tests/fulltext-index.ts"
+    "search:composite": "npx ts-node scripts/tests/composite-index.ts",
+    "search:noindex": "npx ts-node scripts/tests/no-index.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",

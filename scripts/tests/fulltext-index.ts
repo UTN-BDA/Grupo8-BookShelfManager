@@ -84,7 +84,10 @@ async function searchBooks(searchTerm: string) {
     
     const fulltextStartTime = performance.now();
     const fulltextBooks = await prisma.$queryRaw`
-      SELECT * FROM "Book" 
+      SELECT book_id as id, title, author, isbn, pages, publisher, language, 
+             "publishedAt", "createdAt", "updatedAt",
+             title_tsv::text as title_tsv_text
+      FROM "Book" 
       WHERE title_tsv @@ plainto_tsquery('english', ${searchTerm})
       ORDER BY ts_rank(title_tsv, plainto_tsquery('english', ${searchTerm})) DESC
       LIMIT 50;
@@ -96,7 +99,8 @@ async function searchBooks(searchTerm: string) {
     
     console.log('\nQuery Plan (FULL-TEXT):');
     const queryPlan = await prisma.$queryRaw`
-      EXPLAIN ANALYZE SELECT * FROM "Book" 
+      EXPLAIN ANALYZE SELECT book_id as id, title, author
+      FROM "Book" 
       WHERE title_tsv @@ plainto_tsquery('english', ${searchTerm})
       ORDER BY ts_rank(title_tsv, plainto_tsquery('english', ${searchTerm})) DESC
       LIMIT 50;
