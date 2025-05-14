@@ -67,6 +67,17 @@ Para el **Producto Mínimo Viable**, solo se incluyen las tablas necesarias para
    ```
 5. Accede a la aplicación en el navegador en `http://localhost:3000`.
 
+## Indices Actividad 
+
+1. hacer un pull del repositorio
+2. configurar el .env como esta en .env.template pero con sus datos del postgres
+3.correr la app con: npm run dev
+4. generar base de datos con: npm run db:generate
+5. hacer migraciones con npm run db:migrate
+6. hacer los tests de los index (tardan bastante en correr porque son 500k datos los que tiene que leer) (en la terminal te tira los libros que coinciden, tiempo, etc.)
+7. hacer el informe 
+
+
 ## Miembros del Equipo
 
 - [@AgustinDevelopment](https://github.com/AgustinDevelopment) Agustin Alanis
