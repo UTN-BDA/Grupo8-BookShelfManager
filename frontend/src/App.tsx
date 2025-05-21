@@ -5,6 +5,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import UsersPage from './pages/UsersPage';
 import ProfilePage from './pages/ProfilePage';
+import BookshelfPage from './pages/BookshelfPage';
 import Layout from './components/Layout';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
@@ -46,6 +47,7 @@ function AppRoutes() {
             <UsersPage />
           </ProtectedRoute>
         } />
+        <Route path="/bookshelfs" element={<BookshelfPage />} />
         
         {/* Redirecciones */}
         <Route path="/libros" element={<Navigate to="/books" />} />
