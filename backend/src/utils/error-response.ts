@@ -29,11 +29,23 @@ export class ErrorResponse extends Error {
     }
 
     // Error de Prisma
-    if (error?.name === 'PrismaClientKnownRequestError') {
+    if (error?.name === 'PrismaClientKnownRequestError' || error?.name === 'PrismaClientValidationError') {
+      if (error.code === 'P2002') {
+        res.status(409).json({
+          success: false,
+          message: `El campo ${error.meta?.target[0]} ya está en uso`,
+          field: error.meta?.target[0],
+          code: error.code
+        });
+        return;
+      }
+      
+      // Otros errores de Prisma
       res.status(400).json({
         success: false,
-        message: 'Database operation failed',
-        error: error.message
+        message: 'Error en la operación de base de datos',
+        error: error.message,
+        code: error.code
       });
       return;
     }
@@ -47,6 +59,17 @@ export class ErrorResponse extends Error {
   }
 
   static handleError(res: Response, error: any): void {
+    console.error('Error completo:', error);
+    
+    if (error?.name?.includes('Prisma')) {
+      console.error('Error de Prisma:', {
+        code: error.code,
+        meta: error.meta,
+        target: error.meta?.target,
+        name: error.name
+      });
+    }
+    
     const statusCode = error.statusCode ?? 500;
     const message = error.message ?? 'Internal Server Error';
     res.status(statusCode).json({ error: message });

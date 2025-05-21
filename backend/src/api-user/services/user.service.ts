@@ -30,9 +30,6 @@ export class UserService {
       const { password: _, ...userWithoutPassword } = user;
       return userWithoutPassword;
     } catch (error: any) {
-      if (error.code === 'P2002') {
-        throw new Error(`${error.meta?.target[0]} ya está en uso`);
-      }
       throw error;
     }
   }
