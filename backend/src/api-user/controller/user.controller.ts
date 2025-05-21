@@ -9,10 +9,34 @@ export class UserController {
   async registerUser(req: Request, res: Response): Promise<void> {
     try {
       const params: CreateUserParams = req.body;
+
+      if (!params.email || !params.username || !params.password) {
+        res.status(400).json({
+          success: false,
+          message: 'Faltan campos requeridos: email, username y password son obligatorios'
+        });
+        return;
+      }
+
       const user = await userService.registerUser(params);
       res.status(201).json(user);
-    } catch (error) {
-      ErrorResponse.handleError(res, error);
+    } catch (error: any) {
+
+      if (error.code === 'P2002') {
+        res.status(409).json({
+          success: false,
+          message: `El campo ${error.meta?.target[0]} ya está en uso`,
+          field: error.meta?.target[0]
+        });
+      } else if (error.name === 'PrismaClientKnownRequestError' || error.name === 'PrismaClientValidationError') {
+        res.status(400).json({
+          success: false,
+          message: error.message || 'Error de validación de datos',
+          code: error.code
+        });
+      } else {
+        ErrorResponse.handleError(res, error);
+      }
     }
   }
 
