@@ -2,10 +2,11 @@ import express, { Application } from 'express';
 import cors from 'cors';
 import { userRouter } from './api-user';
 import { bookRouter } from './api-book'; 
+import { bookshelfRouter } from './api-bookshelf';
 
 export class App {
-  private app: Application = express();
-  private port: number = Number(process.env.PORT) || 3000;
+  private readonly app: Application = express();
+  private readonly port: number = Number(process.env.PORT) || 3000;
 
   constructor() {
     this.setMiddlewares();
@@ -28,7 +29,8 @@ export class App {
 
   private setRouters(): void {
     this.app.use('/api/users', userRouter);
-    this.app.use('/api/books', bookRouter); 
+    this.app.use('/api/books', bookRouter);
+    this.app.use('/api/bookshelves', bookshelfRouter);
   }
 
   public run(): void {

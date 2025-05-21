@@ -19,26 +19,56 @@ enum Role {
 }
 
 model User {
-  id          String      @id @default(dbgenerated("gen_random_uuid()")) @map("user_id")
-  email       String      @unique
-  username    String      @unique
-  password    String
-  firstName   String
-  lastName    String
-  role        Role        @default(USER)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id              String      @id @default(dbgenerated("gen_random_uuid()")) @map("user_id")
+  email           String      @unique
+  username        String      @unique
+  password        String
+  firstName       String
+  lastName        String
+  role            Role        @default(USER)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  bookshelves     Bookshelf[]
+  bookshelfBooks  BookshelfBook[]
 }
 
 model Book {
-  id          String      @id @default(dbgenerated("gen_random_uuid()")) @map("book_id")
-  title       String
-  author      String
-  isbn        String      @unique
-  pages       Int
-  publisher   String
-  language    String
-  publishedAt DateTime
+  id              String      @id @default(dbgenerated("gen_random_uuid()")) @map("book_id")
+  title           String
+  author          String
+  isbn            String      @unique
+  pages           Int
+  publisher       String
+  language        String
+  publishedAt     DateTime
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  bookshelfBooks  BookshelfBook[]
+}
+
+model Bookshelf {
+  id          String           @id @default(dbgenerated("gen_random_uuid()")) @map("bookshelf_id")
+  name        String
+  description String
+  user        User             @relation(fields: [userId], references: [id])
+  userId      String
+  books       BookshelfBook[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+model BookshelfBook {
+  id          String      @id @default(dbgenerated("gen_random_uuid()")) @map("bookshelf_book_id")
+  bookshelf   Bookshelf   @relation(fields: [bookshelfId], references: [id])
+  bookshelfId String
+  book        Book        @relation(fields: [bookId], references: [id])
+  bookId      String
+  user        User        @relation(fields: [userId], references: [id])
+  userId      String
+  status      String
+  notes       String?
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
+
+  @@unique([bookshelfId, bookId, userId])
 }
