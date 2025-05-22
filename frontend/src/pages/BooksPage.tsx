@@ -1,8 +1,8 @@
-import { useBooks } from '../hooks/useBooks';
+import { useUserBooks } from '../hooks/useUserBooks';
 import { useNavigate } from 'react-router-dom';
 
 export default function BooksPage() {
-  const { books, loading, error } = useBooks();
+  const { books, loading, error } = useUserBooks();
   const navigate = useNavigate();
 
   return (

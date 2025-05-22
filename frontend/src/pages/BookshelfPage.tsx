@@ -1,41 +1,120 @@
-import { useState } from 'react';
-
-interface Bookshelf {
-  id: string;
-  name: string;
-  description?: string;
-  books: Array<{ id: string; title: string }>;
-}
-
-// Obtiene las bibliotecas desde el backend (ejemplo de integración real)
-// Aquí deberías usar un servicio real cuando esté disponible
-const initialBookshelves: Bookshelf[] = [];
+import { useState, useEffect } from 'react';
+import { bookshelfService, type Bookshelf } from '../services/bookshelfService';
+import { useAuth } from '../context/AuthContext';
+import { useBooks } from '../hooks/useBooks';
+import type { Book } from '../services/bookService';
 
 export default function BookshelfPage() {
-  const [bookshelves, setBookshelves] = useState<Bookshelf[]>(initialBookshelves);
+  const { currentUser } = useAuth();
+  const [bookshelfs, setBookshelfs] = useState<Bookshelf[]>([]);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
+  const { books: allBooks } = useBooks();
+  const [showAddBookModal, setShowAddBookModal] = useState<string | null>(null); // bookshelfId
+  const [selectedBookId, setSelectedBookId] = useState<string>('');
+  const [addBookError, setAddBookError] = useState<string | null>(null);
+  const [addBookLoading, setAddBookLoading] = useState(false);
+  const [showGlobalBookModal, setShowGlobalBookModal] = useState(false);
+  const [globalBookId, setGlobalBookId] = useState('');
+  const [globalBookError, setGlobalBookError] = useState<string | null>(null);
+  const [globalBookLoading, setGlobalBookLoading] = useState(false);
 
-  const handleCreate = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (!currentUser) return;
+    setLoading(true);
+    bookshelfService.getBookshelfsByUser(currentUser.id)
+      .then(setBookshelfs)
+      .catch(() => setFetchError('No se pudieron cargar las bibliotecas.'))
+      .finally(() => setLoading(false));
+  }, [currentUser]);
+
+  const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) {
       setError('El nombre es obligatorio');
       return;
     }
-    setBookshelves([
-      ...bookshelves,
-      {
-        id: crypto.randomUUID(),
+    if (!currentUser) {
+      setError('Debes iniciar sesión para crear una biblioteca');
+      return;
+    }
+    setError(null);
+    setLoading(true);
+    try {
+      const newBs = await bookshelfService.createBookshelf({
+        userId: currentUser.id,
         name,
         description,
-        books: [],
-      },
-    ]);
-    setName('');
-    setDescription('');
-    setError(null);
+      });
+      setBookshelfs((prev) => [...prev, newBs]);
+      setName('');
+      setDescription('');
+    } catch {
+      setError('No se pudo crear la biblioteca.');
+    } finally {
+      setLoading(false);
+    }
   };
+
+  async function handleAddBook(bookshelfId: string) {
+    if (!selectedBookId) {
+      setAddBookError('Selecciona un libro');
+      return;
+    }
+    if (!currentUser) return;
+    setAddBookLoading(true);
+    setAddBookError(null);
+    try {
+      await bookshelfService.addBookToBookshelf({
+        bookshelfId,
+        bookId: selectedBookId,
+        userId: currentUser.id,
+        status: 'pendiente',
+        notes: '',
+      });
+      // Refrescar estanterías
+      const updated = await bookshelfService.getBookshelfsByUser(currentUser.id);
+      setBookshelfs(updated);
+      setShowAddBookModal(null);
+      setSelectedBookId('');
+    } catch {
+      setAddBookError('No se pudo agregar el libro');
+    } finally {
+      setAddBookLoading(false);
+    }
+  }
+
+  async function handleAddGlobalBook() {
+    if (!globalBookId) {
+      setGlobalBookError('Selecciona un libro');
+      return;
+    }
+    if (!currentUser || bookshelfs.length === 0) return;
+    setGlobalBookLoading(true);
+    setGlobalBookError(null);
+    try {
+      // Por defecto, agregar a la primera estantería del usuario
+      await bookshelfService.addBookToBookshelf({
+        bookshelfId: bookshelfs[0].id,
+        bookId: globalBookId,
+        userId: currentUser.id,
+        status: 'pendiente',
+        notes: '',
+      });
+      // Refrescar estanterías
+      const updated = await bookshelfService.getBookshelfsByUser(currentUser.id);
+      setBookshelfs(updated);
+      setShowGlobalBookModal(false);
+      setGlobalBookId('');
+    } catch {
+      setGlobalBookError('No se pudo agregar el libro');
+    } finally {
+      setGlobalBookLoading(false);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-start py-12 px-4">
@@ -51,6 +130,7 @@ export default function BookshelfPage() {
               value={name}
               onChange={e => setName(e.target.value)}
               required
+              disabled={loading}
             />
           </div>
           <div>
@@ -61,31 +141,121 @@ export default function BookshelfPage() {
               value={description}
               onChange={e => setDescription(e.target.value)}
               rows={2}
+              disabled={loading}
             />
           </div>
           {error && <p className="text-red-500 text-sm">{error}</p>}
           <button
             type="submit"
             className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md shadow hover:bg-blue-700 transition"
+            disabled={loading}
           >
-            Crear biblioteca
+            {loading ? 'Creando...' : 'Crear biblioteca'}
           </button>
         </form>
+        <div className="flex justify-end mb-4">
+          <button
+            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
+            onClick={() => setShowGlobalBookModal(true)}
+          >
+            + Buscar libro global y agregar
+          </button>
+        </div>
         <div>
-          {bookshelves.length === 0 ? (
+          {loading && bookshelfs.length === 0 ? (
+            <p className="text-gray-400 text-center">Cargando bibliotecas...</p>
+          ) : fetchError ? (
+            <p className="text-red-500 text-center">{fetchError}</p>
+          ) : bookshelfs.length === 0 ? (
             <p className="text-gray-400 text-center">Aún no tienes bibliotecas creadas.</p>
           ) : (
             <ul className="space-y-4">
-              {bookshelves.map(bs => (
+              {bookshelfs.map(bs => (
                 <li key={bs.id} className="bg-blue-50 rounded-lg p-4 border border-blue-100">
                   <h2 className="text-lg font-bold text-blue-800">{bs.name}</h2>
                   {bs.description && <p className="text-gray-600 text-sm mb-2">{bs.description}</p>}
-                  <p className="text-gray-500 text-xs">Libros guardados: {bs.books.length}</p>
+                  <p className="text-gray-500 text-xs mb-2">Libros guardados: {bs.books.length}</p>
+                  <button
+                    className="mt-2 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
+                    onClick={() => setShowAddBookModal(bs.id)}
+                  >
+                    + Agregar libro
+                  </button>
                 </li>
               ))}
             </ul>
           )}
         </div>
+
+        {/* Modal para agregar libro */}
+        {showAddBookModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative">
+              <button
+                className="absolute top-2 right-2 text-gray-400 hover:text-gray-700"
+                onClick={() => { setShowAddBookModal(null); setSelectedBookId(''); setAddBookError(null); }}
+                aria-label="Cerrar"
+              >
+                ×
+              </button>
+              <h3 className="text-lg font-bold mb-4">Agregar libro a la estantería</h3>
+              <select
+                className="w-full mb-4 border rounded p-2"
+                value={selectedBookId}
+                onChange={e => setSelectedBookId(e.target.value)}
+                disabled={addBookLoading}
+              >
+                <option value="">Selecciona un libro</option>
+                {allBooks.map(book => (
+                  <option key={book.id} value={book.id}>{book.title}</option>
+                ))}
+              </select>
+              {addBookError && <p className="text-red-500 text-sm mb-2">{addBookError}</p>}
+              <button
+                className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md shadow hover:bg-blue-700 transition"
+                onClick={() => handleAddBook(showAddBookModal)}
+                disabled={addBookLoading}
+              >
+                {addBookLoading ? 'Agregando...' : 'Agregar libro'}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Modal para agregar libro global */}
+        {showGlobalBookModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative">
+              <button
+                className="absolute top-2 right-2 text-gray-400 hover:text-gray-700"
+                onClick={() => { setShowGlobalBookModal(false); setGlobalBookId(''); setGlobalBookError(null); }}
+                aria-label="Cerrar"
+              >
+                ×
+              </button>
+              <h3 className="text-lg font-bold mb-4">Agregar libro global a tu perfil</h3>
+              <select
+                className="w-full mb-4 border rounded p-2"
+                value={globalBookId}
+                onChange={e => setGlobalBookId(e.target.value)}
+                disabled={globalBookLoading}
+              >
+                <option value="">Selecciona un libro</option>
+                {allBooks.map(book => (
+                  <option key={book.id} value={book.id}>{book.title}</option>
+                ))}
+              </select>
+              {globalBookError && <p className="text-red-500 text-sm mb-2">{globalBookError}</p>}
+              <button
+                className="w-full py-2 px-4 bg-green-600 text-white font-semibold rounded-md shadow hover:bg-green-700 transition"
+                onClick={handleAddGlobalBook}
+                disabled={globalBookLoading}
+              >
+                {globalBookLoading ? 'Agregando...' : 'Agregar libro'}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

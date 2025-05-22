@@ -7,7 +7,7 @@ export const createBookshelf = async ({ userId, name, description }: CreateBooks
   });
 };
 
-export const getBookshelvesByUser = async (userId: string) => {
+export const getBookshelfsByUser = async (userId: string) => {
   return prisma.bookshelf.findMany({
     where: { userId },
     include: { books: { include: { book: true } } },

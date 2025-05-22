@@ -34,7 +34,7 @@ export class App {
   private setRouters(): void {
     this.app.use('/api/users', userRouter);
     this.app.use('/api/books', bookRouter);
-    this.app.use('/api/bookshelves', bookshelfRouter);
+    this.app.use('/api/bookshelfs', bookshelfRouter);
   }
 
   public run(): void {

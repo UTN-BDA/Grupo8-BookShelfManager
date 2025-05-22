@@ -12,11 +12,11 @@ export const createBookshelf = async (req: Request, res: Response) => {
   }
 };
 
-export const getBookshelvesByUser = async (req: Request, res: Response) => {
+export const getBookshelfsByUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const bookshelves = await bookshelfService.getBookshelvesByUser(userId);
-    res.json(bookshelves);
+    const bookshelfs = await bookshelfService.getBookshelfsByUser(userId);
+    res.json(bookshelfs);
   } catch (error) {
     const err = error as Error;
     res.status(400).json({ error: err.message });

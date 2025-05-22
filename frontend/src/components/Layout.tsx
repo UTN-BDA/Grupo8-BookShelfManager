@@ -26,7 +26,7 @@ export default function Layout({ children }: LayoutProps) {
             
             {isAuthenticated ? (
               <>
-                <Link to="/bookshelves" className="hover:text-blue-200 transition-colors">Estanterías</Link>
+                <Link to="/bookshelfs" className="hover:text-blue-200 transition-colors">Estanterías</Link>
                 <Link to="/users" className="hover:text-blue-200 transition-colors">Usuarios</Link>
                 <div className="relative group">
                   <button className="flex items-center hover:text-blue-200 transition-colors">
