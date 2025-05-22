@@ -7,7 +7,7 @@ const router = Router();
 router.post('/', bookshelfController.createBookshelf);
 
 // Obtener todas las bibliotecas de un usuario
-router.get('/user/:userId', bookshelfController.getBookshelvesByUser);
+router.get('/user/:userId', bookshelfController.getBookshelfsByUser);
 
 // Obtener una biblioteca por ID
 router.get('/:id', bookshelfController.getBookshelfById);
