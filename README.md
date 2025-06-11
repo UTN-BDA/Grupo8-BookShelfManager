@@ -75,7 +75,7 @@ git pull origin <rama>
 
 2. Configurar el entorno
 cp .env.template .env
-# Edita .env con tus datos de PostgreSQL
+Edita .env con tus datos de PostgreSQL
 
 3. Instalar dependencias y levantar la app
 npm install
