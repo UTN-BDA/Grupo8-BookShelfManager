@@ -67,16 +67,29 @@ Para el **Producto Mínimo Viable**, solo se incluyen las tablas necesarias para
    ```
 5. Accede a la aplicación en el navegador en `http://localhost:3000`.
 
-## Indices Actividad 
 
-1. hacer un pull del repositorio
-2. configurar el .env como esta en .env.template pero con sus datos del postgres
-3.correr la app con: npm run dev
-4. generar base de datos con: npm run db:generate
-5. hacer migraciones con npm run db:migrate
-6. hacer los tests de los index (tardan bastante en correr porque son 500k datos los que tiene que leer) (en la terminal te tira los libros que coinciden, tiempo, etc.)
-7. hacer el informe 
+## Índice de Actividad
 
+1. Hacer pull del repositorio
+git pull origin <rama>
+
+2. Configurar el entorno
+cp .env.template .env
+# Edita .env con tus datos de PostgreSQL
+
+3. Instalar dependencias y levantar la app
+npm install
+npm run dev
+
+4. Generar la base de datos
+npm run db:generate
+
+5. Aplicar migraciones
+npm run db:migrate
+
+6. Ejecutar tests de índices
+procesa ~500 000 registros; muestra libros coincidentes, tiempos, etc.)
+npm run test:indexes
 
 ## Miembros del Equipo
 
