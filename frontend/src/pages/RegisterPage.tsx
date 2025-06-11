@@ -87,10 +87,10 @@ export default function RegisterPage() {
         }
       } else if (err.response?.status === 400) {
         // Error de validación
-        setError(err.response.data.message || 'Datos inválidos. Revisa los campos e inténtalo de nuevo.');
+        setError(err.response.data.message ?? 'Datos inválidos. Revisa los campos e inténtalo de nuevo.');
       } else {
         // Otros errores
-        setError(err.response?.data?.message || 'Error al registrar. Por favor, intente nuevamente.');
+        setError(err.response?.data?.message ?? 'Error al registrar. Por favor, intente nuevamente.');
       }
     } finally {
       setIsLoading(false);

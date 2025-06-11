@@ -1,11 +1,9 @@
-import { useState } from 'react';
 import { useUsers } from '../hooks/useUsers';
 import UserCard from '../components/UserCard';
 import type { User } from '../services/userService';
 
 export default function UsersPage() {
   const { users, loading, error, deleteUser, refresh } = useUsers();
-  const [userToEdit, setUserToEdit] = useState<User | null>(null);
 
   const handleDelete = async (id: string) => {
     if (confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
@@ -17,7 +15,6 @@ export default function UsersPage() {
   };
 
   const handleEdit = (user: User) => {
-    setUserToEdit(user);
     alert(`Editar usuario: ${user.firstName} ${user.lastName}`);
   };
 

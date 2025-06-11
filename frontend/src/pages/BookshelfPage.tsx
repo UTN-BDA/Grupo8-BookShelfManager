@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { bookshelfService, type Bookshelf } from '../services/bookshelfService';
 import { useAuth } from '../context/AuthContext';
 import { useBooks } from '../hooks/useBooks';
-import type { Book } from '../services/bookService';
 
 export default function BookshelfPage() {
   const { currentUser } = useAuth();
@@ -161,31 +160,38 @@ export default function BookshelfPage() {
             + Buscar libro global y agregar
           </button>
         </div>
-        <div>
-          {loading && bookshelfs.length === 0 ? (
-            <p className="text-gray-400 text-center">Cargando bibliotecas...</p>
-          ) : fetchError ? (
-            <p className="text-red-500 text-center">{fetchError}</p>
-          ) : bookshelfs.length === 0 ? (
-            <p className="text-gray-400 text-center">Aún no tienes bibliotecas creadas.</p>
-          ) : (
-            <ul className="space-y-4">
-              {bookshelfs.map(bs => (
-                <li key={bs.id} className="bg-blue-50 rounded-lg p-4 border border-blue-100">
-                  <h2 className="text-lg font-bold text-blue-800">{bs.name}</h2>
-                  {bs.description && <p className="text-gray-600 text-sm mb-2">{bs.description}</p>}
-                  <p className="text-gray-500 text-xs mb-2">Libros guardados: {bs.books.length}</p>
-                  <button
-                    className="mt-2 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
-                    onClick={() => setShowAddBookModal(bs.id)}
-                  >
-                    + Agregar libro
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+        {/*
+          Extraer la lógica de renderizado de bibliotecas a una variable para evitar ternarios anidados.
+        */}
+        {(() => {
+          let bookshelfContent;
+          if (loading && bookshelfs.length === 0) {
+            bookshelfContent = <p className="text-gray-400 text-center">Cargando bibliotecas...</p>;
+          } else if (fetchError) {
+            bookshelfContent = <p className="text-red-500 text-center">{fetchError}</p>;
+          } else if (bookshelfs.length === 0) {
+            bookshelfContent = <p className="text-gray-400 text-center">Aún no tienes bibliotecas creadas.</p>;
+          } else {
+            bookshelfContent = (
+              <ul className="space-y-4">
+                {bookshelfs.map(bs => (
+                  <li key={bs.id} className="bg-blue-50 rounded-lg p-4 border border-blue-100">
+                    <h2 className="text-lg font-bold text-blue-800">{bs.name}</h2>
+                    {bs.description && <p className="text-gray-600 text-sm mb-2">{bs.description}</p>}
+                    <p className="text-gray-500 text-xs mb-2">Libros guardados: {bs.books.length}</p>
+                    <button
+                      className="mt-2 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
+                      onClick={() => setShowAddBookModal(bs.id)}
+                    >
+                      + Agregar libro
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            );
+          }
+          return <div>{bookshelfContent}</div>;
+        })()}
 
         {/* Modal para agregar libro */}
         {showAddBookModal && (

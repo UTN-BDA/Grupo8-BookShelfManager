@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, type ReactNode, useMemo } from 'react';
 import { type User, type LoginRequest, type RegisterRequest, userService } from '../services/userService';
 
 interface AuthContextType {
@@ -29,23 +29,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   const login = async (credentials: LoginRequest): Promise<User> => {
-    try {
-      const user = await userService.login(credentials);
-      setCurrentUser(user);
-      setIsAuthenticated(true);
-      return user;
-    } catch (error) {
-      throw error;
-    }
+    const user = await userService.login(credentials);
+    setCurrentUser(user);
+    setIsAuthenticated(true);
+    return user;
   };
 
   const register = async (userData: RegisterRequest): Promise<User> => {
-    try {
-      const user = await userService.register(userData);
-      return user;
-    } catch (error) {
-      throw error;
-    }
+    const user = await userService.register(userData);
+    return user;
   };
 
   const logout = () => {
@@ -54,14 +46,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setIsAuthenticated(false);
   };
 
-  const value = {
+  const value = useMemo(() => ({
     currentUser,
     loading,
     login,
     register,
     logout,
     isAuthenticated
-  };
+  }), [currentUser, loading, login, register, logout, isAuthenticated]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

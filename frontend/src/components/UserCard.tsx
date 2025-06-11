@@ -6,7 +6,7 @@ interface UserCardProps {
   onEdit?: (user: User) => void;
 }
 
-export default function UserCard({ user, onDelete, onEdit }: UserCardProps) {
+export default function UserCard({ user, onDelete, onEdit }: Readonly<UserCardProps>) {
   return (
     <div className="bg-white rounded-lg shadow-md p-6 mb-4 hover:shadow-lg transition-shadow duration-200">
       <div className="flex justify-between items-start">

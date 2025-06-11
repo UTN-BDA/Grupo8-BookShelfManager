@@ -8,7 +8,7 @@ export default function Loader({
   size = 'md', 
   color = 'blue',
   fullScreen = false 
-}: LoaderProps) {
+}: Readonly<LoaderProps>) {
   const sizeClasses = {
     sm: 'h-6 w-6',
     md: 'h-10 w-10',

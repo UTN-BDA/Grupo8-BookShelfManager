@@ -29,13 +29,21 @@ async function performBookJoins(iterations: number, batchSize: number = 1000) {
     const idx = start + i;
     let publishedAt = new Date(now - (idx * 86400000));
     if (publishedAt < minDate) publishedAt = minDate;
+    let language: string;
+    if (idx % 3 === 0) {
+      language = "English";
+    } else if (idx % 3 === 1) {
+      language = "Spanish";
+    } else {
+      language = "French";
+    }
     books.push({
       title: `Test Book ${idx + 1}`,
       author: `Test Author ${(idx % 5) + 1}`,
       isbn: `ISBN-TEST-${now}-${idx}`,
       pages: 100 + (idx % 400),
       publisher: `Publisher ${(idx % 10) + 1}`,
-      language: idx % 3 === 0 ? "English" : idx % 3 === 1 ? "Spanish" : "French",
+      language,
       publishedAt
     });
   }

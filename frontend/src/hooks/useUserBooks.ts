@@ -3,6 +3,10 @@ import { bookshelfService, type Bookshelf } from '../services/bookshelfService';
 import { useAuth } from '../context/AuthContext';
 import type { Book } from '../services/bookService';
 
+function extractBooksFromBookshelf(bs: Bookshelf): Book[] {
+  return bs.books.map(b => b as Book);
+}
+
 export function useUserBooks() {
   const { currentUser } = useAuth();
   const [books, setBooks] = useState<Book[]>([]);
@@ -15,7 +19,7 @@ export function useUserBooks() {
     bookshelfService.getBookshelfsByUser(currentUser.id)
       .then((bookshelfs: Bookshelf[]) => {
         // Extraer todos los libros de todas las estanterías
-        const allBooks = bookshelfs.flatMap(bs => bs.books.map(b => b as Book));
+        const allBooks = bookshelfs.flatMap(extractBooksFromBookshelf);
         // Eliminar duplicados por id
         const uniqueBooks = Array.from(new Map(allBooks.map(b => [b.id, b])).values());
         setBooks(uniqueBooks);

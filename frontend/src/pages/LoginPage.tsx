@@ -26,7 +26,7 @@ export default function LoginPage() {
       await login({ email, password });
       navigate('/');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Error al iniciar sesión. Verifique sus credenciales.');
+      setError(err.response?.data?.message ?? 'Error al iniciar sesión. Verifique sus credenciales.');
     } finally {
       setIsLoading(false);
     }
