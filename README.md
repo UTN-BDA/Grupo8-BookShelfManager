@@ -2,94 +2,74 @@
 
 ## Descripción del Proyecto
 
-El proyecto **BookShelfManager** es una plataforma integral diseñada para gestionar, descubrir y disfrutar del mundo de los libros. Este sistema está dirigido tanto a lectores casuales como a bibliófilos, proporcionando herramientas avanzadas como reconocimiento de portadas, recomendaciones personalizadas y gestión de colecciones.
+BookShelfManager es una plataforma web para gestionar, descubrir y disfrutar libros. Permite a los usuarios crear estanterías personales, agregar libros desde una base global, y organizar su colección. El sistema está dirigido tanto a lectores casuales como a bibliófilos, e incluye funcionalidades de gestión de colecciones y recomendaciones personalizadas.
 
-Actualmente, estamos desarrollando el **Producto Mínimo Viable (MVP)** enfocado en la **Gestión Básica de Colección Personal** y un sistema de reconocimiento de portadas mediante inteligencia artificial.
+Actualmente, el MVP se enfoca en la **gestión básica de la colección personal** y la organización de libros en estanterías.
 
 ## Módulos Principales del MVP
 
-El MVP se basa en el flujo de **Registro de Libro en Colección** y cubre las siguientes funcionalidades:
-
-1. **Captura de Imagen**: Los usuarios pueden tomar una foto de la portada del libro.
-2. **Procesamiento con IA**:
-   - Reconocimiento visual para identificar portadas.
-   - Extracción de metadatos como título, autor, género y editorial.
-3. **Sugerencia de Metadata**: Presentación de los datos sugeridos por el sistema para ser confirmados o editados.
-4. **Registro en la Colección**: Almacenamiento del libro en la colección personal del usuario.
-5. **Recomendaciones Iniciales**: Basadas en el libro registrado, se sugieren libros similares y posibles lecturas recomendadas.
+- **Gestión de Estanterías:** Crea, edita y elimina estanterías personales.
+- **Gestión de Libros:** Agrega libros desde una base global a tus estanterías, visualiza y elimina libros de tu colección.
+- **Visualización de Colección:** Consulta todos los libros guardados en tus estanterías.
+- **Autenticación de Usuarios:** Registro, inicio de sesión y gestión de perfil.
 
 ## Tecnologías Utilizadas
 
-El proyecto utiliza las siguientes tecnologías para garantizar escalabilidad, flexibilidad y rendimiento:
-
-- **TypeScript**: Lenguaje principal para el desarrollo del backend.
-- **Prisma**: ORM para la interacción con la base de datos.
-- **PostgreSQL**: Base de datos relacional para el almacenamiento de información.
-- **Docker**: Contenedores para facilitar la configuración y despliegue de ambientes.
-- **Inteligencia Artificial**: Algoritmos para el reconocimiento visual y generación de recomendaciones.
+- **TypeScript**: Lenguaje principal para frontend y backend.
+- **React + Vite**: Frontend moderno y rápido.
+- **TailwindCSS**: Estilos minimalistas y accesibles.
+- **Prisma**: ORM para la base de datos.
+- **PostgreSQL**: Base de datos relacional.
+- **Express**: Backend API REST.
 
 ## Estructura de Base de Datos (MVP)
 
-Para el **Producto Mínimo Viable**, solo se incluyen las tablas necesarias para el flujo principal de registro de libros:
+### Users
+- `id`: Identificador único
+- `name`, `email`, `username`, `role`, etc.
 
-### **Users**
-- `id`: Identificador único.
-- `name`: Nombre del usuario.
-- `email`: Correo electrónico.
-- `preferences`: Preferencias del usuario.
-- `role`: Rol del usuario (lector casual, ávido lector, etc.).
+### Books
+- `id`: Identificador único
+- `title`, `author`, `genre`, `publisher`, `year`, `cover_image`, etc.
 
-### **Books**
-- `id`: Identificador único.
-- `title`: Título del libro.
-- `author`: Autor del libro.
-- `genre`: Género literario.
-- `publisher`: Editorial.
-- `year`: Año de publicación.
-- `cover_image`: Imagen de la portada.
+### Bookshelf
+- `id`: Identificador único
+- `name`, `description`, `userId`
 
-### **Collections**
-- `id`: Identificador único.
-- `userId`: Referencia al usuario propietario.
-- `bookId`: Referencia al libro.
-- `status`: Estado del libro en la colección (ej. leído, pendiente).
-- `notes`: Notas personales del usuario.
-- `location`: Ubicación del libro en la colección.
+### BookshelfBook
+- Relación entre estantería, libro y usuario
+- `status`, `notes`, `createdAt`, etc.
 
 ## Cómo Ejecutar el Proyecto
 
 1. Clona este repositorio.
-2. Asegúrate de tener **Docker** instalado.
-3. Crea un archivo `.env` basado en el ejemplo proporcionado para configurar las variables de entorno.
-4. Levanta los servicios con el comando:
+2. Configura el entorno:
+   - Copia `.env.template` a `.env` y edítalo con tus datos de PostgreSQL.
+3. Instala dependencias y levanta la app:
    ```bash
-   docker-compose up
+   npm install
+   npm run dev
    ```
-5. Accede a la aplicación en el navegador en `http://localhost:3000`.
+4. Genera la base de datos y aplica migraciones:
+   ```bash
+   npm run db:generate
+   npm run db:migrate
+   ```
+5. Accede a la aplicación en `http://localhost:3000` (o el puerto configurado).
 
+## Flujo Básico de Uso
 
-## Índice de Actividad
+1. Regístrate o inicia sesión.
+2. Crea una o más estanterías personales.
+3. Busca libros en la base global y agrégalos a tus estanterías.
+4. Visualiza y organiza tu colección desde la sección "Estanterías".
 
-1. Hacer pull del repositorio
-git pull origin <rama>
+## Scripts Útiles
 
-2. Configurar el entorno
-cp .env.template .env
-Edita .env con tus datos de PostgreSQL
-
-3. Instalar dependencias y levantar la app
-npm install
-npm run dev
-
-4. Generar la base de datos
-npm run db:generate
-
-5. Aplicar migraciones
-npm run db:migrate
-
-6. Ejecutar tests de índices
-procesa ~500 000 registros; muestra libros coincidentes, tiempos, etc.)
-npm run test:indexes
+- `npm run dev`: Levanta frontend y backend en modo desarrollo.
+- `npm run db:generate`: Genera la base de datos.
+- `npm run db:migrate`: Aplica migraciones.
+- `npm run test:indexes`: Ejecuta tests de índices sobre la base de datos.
 
 ## Miembros del Equipo
 

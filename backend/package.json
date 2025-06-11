@@ -1,5 +1,5 @@
 {
-  "name": "bookshelfmanager-basedatosavanzada",
+  "name": "bookshelfmanager-backend",
   "version": "0.1.0",
   "description": "Backend para gestion de libros",
   "main": "dist/server.js",
