@@ -1,54 +1,42 @@
-# React + TypeScript + Vite
+# BookShelfManager Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este frontend está construido con **React**, **TypeScript**, **Vite** y **TailwindCSS**. Permite a los usuarios:
 
-Currently, two official plugins are available:
+- Registrarse e iniciar sesión.
+- Crear, editar y eliminar estanterías personales.
+- Buscar libros en la base global y agregarlos a sus estanterías.
+- Visualizar y organizar su colección de libros.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Estructura
 
-## Expanding the ESLint configuration
+- `src/components/` — Componentes reutilizables (Layout, Loader, BookCard, etc.)
+- `src/pages/` — Páginas principales (Libros, Estanterías, Perfil, etc.)
+- `src/services/` — Servicios para consumir la API backend.
+- `src/hooks/` — Hooks personalizados para lógica de negocio.
+- `src/context/` — Contexto de autenticación.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Scripts
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+- `npm install` — Instala dependencias.
+- `npm run dev` — Inicia el frontend en modo desarrollo (por defecto en `http://localhost:5173`).
+- `npm run build` — Compila la app para producción.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Requisitos
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- Node.js >= 18
+- Tener el backend corriendo (ver instrucciones en la carpeta `../backend`)
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+## Configuración
+
+1. Copia `.env.template` a `.env` y ajusta la URL de la API si es necesario.
+2. Ejecuta los scripts indicados arriba.
+
+## Notas
+
+- El frontend está preparado para consumir la API REST del backend.
+- El diseño es minimalista y accesible, usando TailwindCSS.
+- El flujo principal es: crear estantería → buscar libro global → agregar a estantería.
+
+---
+
+Para detalles de la arquitectura y el flujo completo, consulta el README principal del proyecto.
