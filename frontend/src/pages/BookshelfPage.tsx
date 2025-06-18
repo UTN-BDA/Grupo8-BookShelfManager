@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { bookshelfService, type Bookshelf } from '../services/bookshelfService';
 import { useAuth } from '../context/AuthContext';
 import { useBooks } from '../hooks/useBooks';
+import AddOwnBookForm from '../components/AddOwnBookForm';
+import { useNavigate } from 'react-router-dom';
 
 export default function BookshelfPage() {
   const { currentUser } = useAuth();
@@ -20,6 +22,7 @@ export default function BookshelfPage() {
   const [globalBookId, setGlobalBookId] = useState('');
   const [globalBookError, setGlobalBookError] = useState<string | null>(null);
   const [globalBookLoading, setGlobalBookLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!currentUser) return;
@@ -115,6 +118,13 @@ export default function BookshelfPage() {
     }
   }
 
+  const handleBookAdded = async () => {
+    if (!currentUser) return;
+    // Refresca las estanterías para actualizar el contador
+    const updated = await bookshelfService.getBookshelfsByUser(currentUser.id);
+    setBookshelfs(updated);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-start py-12 px-4">
       <div className="w-full max-w-2xl bg-white rounded-xl shadow-md p-8">
@@ -152,12 +162,24 @@ export default function BookshelfPage() {
             {loading ? 'Creando...' : 'Crear biblioteca'}
           </button>
         </form>
-        <div className="flex justify-end mb-4">
+        <div className="flex justify-end mb-4 gap-2">
           <button
             className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
             onClick={() => setShowGlobalBookModal(true)}
           >
             + Buscar libro global y agregar
+          </button>
+          <button
+            className="px-4 py-2 bg-blue-800 text-white rounded hover:bg-blue-900 text-sm"
+            onClick={() => setShowAddBookModal('own')}
+          >
+            + Subir libro propio
+          </button>
+          <button
+            className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-900 text-sm"
+            onClick={() => navigate('/books')}
+          >
+            Ver colección completa
           </button>
         </div>
         {/*
@@ -179,12 +201,6 @@ export default function BookshelfPage() {
                     <h2 className="text-lg font-bold text-blue-800">{bs.name}</h2>
                     {bs.description && <p className="text-gray-600 text-sm mb-2">{bs.description}</p>}
                     <p className="text-gray-500 text-xs mb-2">Libros guardados: {bs.books.length}</p>
-                    <button
-                      className="mt-2 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
-                      onClick={() => setShowAddBookModal(bs.id)}
-                    >
-                      + Agregar libro
-                    </button>
                   </li>
                 ))}
               </ul>
@@ -194,7 +210,7 @@ export default function BookshelfPage() {
         })()}
 
         {/* Modal para agregar libro */}
-        {showAddBookModal && (
+        {showAddBookModal && showAddBookModal !== 'own' && (
           <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative">
               <button
@@ -259,6 +275,23 @@ export default function BookshelfPage() {
               >
                 {globalBookLoading ? 'Agregando...' : 'Agregar libro'}
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* Modal para subir libro propio */}
+        {showAddBookModal === 'own' && (
+          <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative">
+              <button
+                className="absolute top-2 right-2 text-gray-400 hover:text-gray-700"
+                onClick={() => setShowAddBookModal(null)}
+                aria-label="Cerrar"
+              >
+                ×
+              </button>
+              {/* Por defecto, se asocia a la primera estantería del usuario */}
+              <AddOwnBookForm onBookAdded={handleBookAdded} />
             </div>
           </div>
         )}

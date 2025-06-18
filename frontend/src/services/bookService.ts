@@ -20,4 +20,8 @@ export const bookService = {
     const res = await api.get<Book>(`/books/${id}`);
     return res.data;
   },
+  async createBook(book: Omit<Book, 'id'>): Promise<Book> {
+    const res = await api.post<Book>('/books', book);
+    return res.data;
+  },
 };
