@@ -3,8 +3,11 @@ import { bookshelfService, type Bookshelf } from '../services/bookshelfService';
 import { useAuth } from '../context/AuthContext';
 import type { Book } from '../services/bookService';
 
+// Extrae los libros reales de la estructura BookshelfBook[]
 function extractBooksFromBookshelf(bs: Bookshelf): Book[] {
-  return bs.books.map(b => b as Book);
+  return bs.books
+    .map((b: any) => b.book)
+    .filter((b: Book | undefined) => !!b);
 }
 
 export function useUserBooks() {

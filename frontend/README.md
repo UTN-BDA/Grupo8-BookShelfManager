@@ -15,28 +15,52 @@ Este frontend está construido con **React**, **TypeScript**, **Vite** y **Tailw
 - `src/hooks/` — Hooks personalizados para lógica de negocio.
 - `src/context/` — Contexto de autenticación.
 
-## Scripts
+---
 
-- `npm install` — Instala dependencias.
-- `npm run dev` — Inicia el frontend en modo desarrollo (por defecto en `http://localhost:5173`).
-- `npm run build` — Compila la app para producción.
+# Cómo ejecutar el frontend (desarrollo)
 
-## Requisitos
+## 1. Requisitos previos
 
 - Node.js >= 18
 - Tener el backend corriendo (ver instrucciones en la carpeta `../backend`)
 
-## Configuración
+## 2. Configurar variables de entorno
 
-1. Copia `.env.template` a `.env` y ajusta la URL de la API si es necesario.
-2. Ejecuta los scripts indicados arriba.
+- Copia `.env.template` a `.env` y ajusta la URL de la API si es necesario (por defecto: `http://localhost:3000/api`).
 
-## Notas
+## 3. Instalar dependencias
+
+```bash
+npm install
+```
+
+## 4. Ejecutar el frontend
+
+```bash
+npm run dev
+```
+Por defecto la app estará disponible en `http://localhost:5173`
+
+## 5. Compilar para producción
+
+```bash
+npm run build
+```
+
+---
+
+# Scripts útiles
+
+- `npm run dev`: Inicia el frontend en modo desarrollo.
+- `npm run build`: Compila la app para producción.
+- `npm run preview`: Previsualiza la app de producción localmente.
+
+---
+
+# Notas
 
 - El frontend está preparado para consumir la API REST del backend.
 - El diseño es minimalista y accesible, usando TailwindCSS.
 - El flujo principal es: crear estantería → buscar libro global → agregar a estantería.
-
----
 
 Para detalles de la arquitectura y el flujo completo, consulta el README principal del proyecto.

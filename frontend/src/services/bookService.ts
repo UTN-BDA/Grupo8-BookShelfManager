@@ -16,4 +16,8 @@ export const bookService = {
     const res = await api.get<Book[]>('/books');
     return res.data;
   },
+  async getBookById(id: string): Promise<Book> {
+    const res = await api.get<Book>(`/books/${id}`);
+    return res.data;
+  },
 };

@@ -1,8 +1,8 @@
-import { useUserBooks } from '../hooks/useUserBooks';
+import { useBooks } from '../hooks/useBooks';
 import { useNavigate } from 'react-router-dom';
 
 export default function BooksPage() {
-  const { books, loading, error } = useUserBooks();
+  const { books, loading, error } = useBooks();
   const navigate = useNavigate();
 
   return (
@@ -16,7 +16,7 @@ export default function BooksPage() {
             <li key={book.id}>
               <button
                 className="w-full text-left px-4 py-3 rounded-lg bg-blue-50 hover:bg-blue-100 transition font-medium text-blue-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
-                onClick={() => navigate(`/libros/${book.id}`)}
+                onClick={() => navigate(`/books/${book.id}`)}
               >
                 {book.title}
               </button>

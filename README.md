@@ -40,38 +40,99 @@ Actualmente, el MVP se enfoca en la **gestión básica de la colección personal
 - Relación entre estantería, libro y usuario
 - `status`, `notes`, `createdAt`, etc.
 
-## Cómo Ejecutar el Proyecto
+---
 
-1. Clona este repositorio.
-2. Configura el entorno:
-   - Copia `.env.template` a `.env` y edítalo con tus datos de PostgreSQL.
-3. Instala dependencias y levanta la app:
-   ```bash
-   npm install
-   npm run dev
-   ```
-4. Genera la base de datos y aplica migraciones:
-   ```bash
-   npm run db:generate
-   npm run db:migrate
-   ```
-5. Accede a la aplicación en `http://localhost:3000` (o el puerto configurado).
+# Cómo ejecutar el proyecto (desarrollo)
 
-## Flujo Básico de Uso
+## 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/UTN-BDA/Grupo8-BookShelfManager.git
+cd Grupo8-BookShelfManager
+```
+
+## 2. Configurar variables de entorno
+
+### Backend
+- Copia `backend/.env.template` a `backend/.env` y edítalo con tus datos reales de PostgreSQL y puerto si es necesario.
+
+### Frontend
+- Copia `frontend/.env.template` a `frontend/.env` y ajusta la URL de la API si es necesario (por defecto: `http://localhost:5173`).
+
+## 3. Instalar dependencias
+
+### Backend
+```bash
+cd backend
+npm install
+```
+
+### Frontend
+```bash
+cd ../frontend
+npm install
+```
+
+## 4. Preparar la base de datos
+
+Desde la carpeta `backend`:
+```bash
+npm run db:generate   # Genera el cliente Prisma
+npm run db:migrate    # Aplica migraciones y crea las tablas
+```
+
+Puedes usar `npm run db:studio` para abrir Prisma Studio y ver la base de datos en modo visual.
+
+## 5. Ejecutar el backend
+
+Desde la carpeta `backend`:
+```bash
+npm run dev
+```
+Por defecto corre en `http://localhost:3000`
+
+## 6. Ejecutar el frontend
+
+Desde la carpeta `frontend`:
+```bash
+npm run dev
+```
+Por defecto corre en `http://localhost:5173`
+
+---
+
+# Flujo Básico de Uso
 
 1. Regístrate o inicia sesión.
 2. Crea una o más estanterías personales.
 3. Busca libros en la base global y agrégalos a tus estanterías.
 4. Visualiza y organiza tu colección desde la sección "Estanterías".
 
-## Scripts Útiles
+---
 
-- `npm run dev`: Levanta frontend y backend en modo desarrollo.
-- `npm run db:generate`: Genera la base de datos.
+# Scripts Útiles
+
+## Backend
+- `npm run dev`: Levanta el backend en modo desarrollo.
+- `npm run db:generate`: Genera el cliente Prisma.
 - `npm run db:migrate`: Aplica migraciones.
-- `npm run test:indexes`: Ejecuta tests de índices sobre la base de datos.
+- `npm run db:studio`: Abre Prisma Studio.
+- `npm run search:btree`, `search:hash`, etc.: Ejecuta tests de índices.
 
-## Miembros del Equipo
+## Frontend
+- `npm run dev`: Levanta el frontend en modo desarrollo.
+- `npm run build`: Compila la app para producción.
+
+---
+
+# Requisitos
+
+- Node.js >= 18
+- PostgreSQL corriendo y accesible
+
+---
+
+# Miembros del Equipo
 
 - [@AgustinDevelopment](https://github.com/AgustinDevelopment) Agustin Alanis
 - [@Kobyuu](https://github.com/Kobyuu) Juan Manuel Kobayashi

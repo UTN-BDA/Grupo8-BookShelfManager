@@ -17,29 +17,57 @@ Este backend está construido con **Node.js**, **TypeScript**, **Express** y **P
 - `src/config/` — Configuración de Prisma y Express
 - `prisma/schema.prisma` — Definición de modelos y relaciones
 
-## Scripts
+---
 
-- `npm install` — Instala dependencias
-- `npm run dev` — Inicia el backend en modo desarrollo (por defecto en `http://localhost:3000`)
-- `npm run db:generate` — Genera la base de datos
-- `npm run db:migrate` — Aplica migraciones
-- `npm run test:indexes` — Ejecuta tests de índices sobre la base de datos
+# Cómo ejecutar el backend (desarrollo)
 
-## Requisitos
+## 1. Requisitos previos
 
 - Node.js >= 18
 - PostgreSQL corriendo y accesible
 
-## Configuración
+## 2. Configurar variables de entorno
 
-1. Copia `.env.template` a `.env` y configura la variable `DATABASE_URL` con los datos de tu base de datos PostgreSQL.
-2. Ejecuta los scripts indicados arriba.
+- Copia `.env.template` a `.env` y configura la variable `DATABASE_URL` con los datos de tu base de datos PostgreSQL.
+- Puedes ajustar el puerto (`PORT`) y la URL del frontend (`FRONTEND_URL`) si es necesario.
 
-## Notas
+## 3. Instalar dependencias
 
-- El backend implementa control de acceso y relaciones entre usuarios, libros y estanterías.
-- Usa Prisma como ORM y expone endpoints REST documentados en el código fuente.
+```bash
+npm install
+```
+
+## 4. Preparar la base de datos
+
+```bash
+npm run db:generate   # Genera el cliente Prisma
+npm run db:migrate    # Aplica migraciones y crea las tablas
+```
+
+Puedes usar `npm run db:studio` para abrir Prisma Studio y ver la base de datos en modo visual.
+
+## 5. Ejecutar el backend
+
+```bash
+npm run dev
+```
+Por defecto corre en `http://localhost:3000`
 
 ---
 
-Para detalles de endpoints y modelos, consulta el código fuente y el README principal del proyecto.
+# Scripts útiles
+
+- `npm run dev`: Inicia el backend en modo desarrollo.
+- `npm run db:generate`: Genera el cliente Prisma.
+- `npm run db:migrate`: Aplica migraciones.
+- `npm run db:studio`: Abre Prisma Studio.
+- `npm run search:btree`, `search:hash`, etc.: Ejecuta tests de índices.
+
+---
+
+# Notas
+
+- El backend implementa control de acceso y relaciones entre usuarios, libros y estanterías.
+- La API está preparada para ser consumida por el frontend del proyecto.
+
+Para detalles de la arquitectura y el flujo completo, consulta el README principal del proyecto.

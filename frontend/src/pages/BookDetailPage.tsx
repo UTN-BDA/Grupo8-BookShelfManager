@@ -1,23 +1,30 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useBooks } from '../hooks/useBooks';
+import { useEffect, useState } from 'react';
+import { bookService } from '../services/bookService';
+import type { Book } from '../services/bookService';
 
 export default function BookDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const { books, loading, error } = useBooks();
-  const book = books.find(b => b.id === id);
+  const [book, setBook] = useState<Book | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!id) return;
+    setLoading(true);
+    bookService.getBookById(id)
+      .then(setBook)
+      .catch(() => setError('Libro no encontrado'))
+      .finally(() => setLoading(false));
+  }, [id]);
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <p className="text-gray-400">Cargando libro...</p>
     </div>
   );
-  if (error) return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <p className="text-red-500">{error}</p>
-    </div>
-  );
-  if (!book) return (
+  if (error || !book) return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="bg-white rounded-xl shadow-md p-8 max-w-md text-center">
         <h2 className="text-xl font-semibold text-gray-800 mb-2">Libro no encontrado</h2>
