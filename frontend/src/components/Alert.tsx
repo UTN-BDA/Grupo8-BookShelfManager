@@ -6,7 +6,7 @@ interface AlertProps {
   onClose?: () => void;
 }
 
-export default function Alert({ type, message, onClose }: AlertProps) {
+export default function Alert({ type, message, onClose }: Readonly<AlertProps>) {
   const bgColors = {
     success: 'bg-green-50',
     error: 'bg-red-50',

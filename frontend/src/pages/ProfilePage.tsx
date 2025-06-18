@@ -6,10 +6,10 @@ export default function ProfilePage() {
   const { currentUser, logout } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    email: currentUser?.email || '',
-    username: currentUser?.username || '',
-    firstName: currentUser?.firstName || '',
-    lastName: currentUser?.lastName || '',
+    email: currentUser?.email ?? '',
+    username: currentUser?.username ?? '',
+    firstName: currentUser?.firstName ?? '',
+    lastName: currentUser?.lastName ?? '',
     password: '',
     confirmPassword: '',
   });
@@ -75,7 +75,7 @@ export default function ProfilePage() {
       }));
       
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Error al actualizar el perfil');
+      setError(err.response?.data?.message ?? 'Error al actualizar el perfil');
     } finally {
       setIsLoading(false);
     }

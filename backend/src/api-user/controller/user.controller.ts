@@ -31,7 +31,7 @@ export class UserController {
       } else if (error.name === 'PrismaClientKnownRequestError' || error.name === 'PrismaClientValidationError') {
         res.status(400).json({
           success: false,
-          message: error.message || 'Error de validación de datos',
+          message: error.message ?? 'Error de validación de datos',
           code: error.code
         });
       } else {

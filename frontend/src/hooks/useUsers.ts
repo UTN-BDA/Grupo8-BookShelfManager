@@ -13,6 +13,7 @@ export function useUsers() {
       setUsers(data);
       setError(null);
     } catch (err) {
+      console.error('Error al cargar los usuarios:', err);
       setError('Error al cargar los usuarios');
     } finally {
       setLoading(false);
@@ -29,6 +30,7 @@ export function useUsers() {
       setUsers(users.filter(user => user.id !== id));
       return true;
     } catch (err) {
+      console.error('Error al eliminar el usuario:', err);
       setError('Error al eliminar el usuario');
       return false;
     }
