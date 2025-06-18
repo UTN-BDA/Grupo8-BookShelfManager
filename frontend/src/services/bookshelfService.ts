@@ -36,4 +36,15 @@ export const bookshelfService = {
     const res = await api.post(`/bookshelfs/${data.bookshelfId}/books`, data);
     return res.data;
   },
+
+  async addOrCreateBookToBookshelf(payload: {
+    bookshelfId: string;
+    userId: string;
+    status: string;
+    notes?: string;
+    book: Omit<import('./bookService').Book, 'id'>;
+  }) {
+    const res = await api.post('/books/add-to-bookshelf', payload);
+    return res.data;
+  },
 };

@@ -9,6 +9,13 @@ export class BookController {
     async createBook(req: Request, res: Response): Promise<void> {
         try {
         const params: CreateBookParams = req.body;
+        if (params.publishedAt && typeof params.publishedAt === 'string') {
+          if (/^\d{4}-\d{2}-\d{2}$/.test(params.publishedAt)) {
+            params.publishedAt = new Date(params.publishedAt + 'T00:00:00Z');
+          } else {
+            params.publishedAt = new Date(params.publishedAt);
+          }
+        }
         const book = await bookService.createBook(params);
         res.status(201).json(book);
         } catch (error) {
@@ -60,6 +67,50 @@ export class BookController {
         }
     }
 
+    async addBookToBookshelfOrCreate(req: Request, res: Response): Promise<void> {
+        try {
+            const { bookshelfId, userId, status, notes, book } = req.body;
+            // Convertir publishedAt a Date si es string
+            if (book.publishedAt && typeof book.publishedAt === 'string') {
+                book.publishedAt = new Date(book.publishedAt);
+            }
+            // Buscar libro por ISBN
+            let foundBook = await bookService.findBookByISBN(book.isbn);
+            foundBook ??= await bookService.createBook(book);
+            // Asociar a la estantería
+            const bookshelfBook = await (await import('../../api-bookshelf/services/bookshelf.service')).addBookToBookshelf({
+                bookshelfId,
+                bookId: foundBook.id,
+                userId,
+                status,
+                notes
+            });
+            res.status(201).json({ book: foundBook, bookshelfBook });
+        } catch (error) {
+            ErrorResponse.handleError(res, error);
+        }
+    }
+
+    async addUserBook(req: Request, res: Response): Promise<void> {
+        try {
+            const { userId, title, author, isbn, pages, publisher, language, publishedAt, notes } = req.body;
+            const { createUserBook } = await import('../services/userbook.service');
+            const userBook = await createUserBook({
+                userId,
+                title,
+                author,
+                isbn,
+                pages,
+                publisher,
+                language,
+                publishedAt: new Date(publishedAt),
+                notes
+            });
+            res.status(201).json(userBook);
+        } catch (error) {
+            ErrorResponse.handleError(res, error);
+        }
+    }
 
 }
 

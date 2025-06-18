@@ -35,6 +35,10 @@ export class BookService {
         });
         return book;
     }
+
+    async findBookByISBN(isbn: string): Promise<Book | null> {
+        return prisma.book.findUnique({ where: { isbn } });
+    }
 }
 
 export default new BookService();
