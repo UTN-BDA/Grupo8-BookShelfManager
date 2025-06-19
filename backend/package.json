@@ -9,6 +9,7 @@
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
+    "db:reset": "npx prisma migrate reset --force",
     "db:studio": "prisma studio",
     "join-books": "npx ts-node scripts/benchmark-books.ts",
     "search:btree": "npx ts-node scripts/tests/btree-index.ts",
