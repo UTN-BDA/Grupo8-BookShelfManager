@@ -18,7 +18,7 @@ export class App {
       origin: ['http://localhost:5173', 'http://localhost:5174'],
       credentials: true, // Permite el uso de credenciales
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'x-user-id']
     }));
     
     // Parseo JSON

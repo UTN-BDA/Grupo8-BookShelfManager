@@ -1,9 +1,23 @@
 import { useUsers } from '../hooks/useUsers';
+import { useAuth } from '../context/AuthContext';
 import UserCard from '../components/UserCard';
 import type { User } from '../services/userService';
 
 export default function UsersPage() {
+  const { currentUser } = useAuth();
   const { users, loading, error, deleteUser, refresh } = useUsers();
+
+  // Only admin allows access to this page
+  if (currentUser?.role !== 'ADMIN') {
+    return (
+      <div className="max-w-4xl mx-auto p-4">
+        <div className="p-6 bg-red-50 text-red-700 rounded-md text-center">
+          <h2 className="text-xl font-bold mb-2">Acceso Restringido</h2>
+          <p>Solo los administradores pueden acceder a la gestión de usuarios.</p>
+        </div>
+      </div>
+    );
+  }
 
   const handleDelete = async (id: string) => {
     if (confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
@@ -43,7 +57,7 @@ export default function UsersPage() {
   return (
     <div className="max-w-4xl mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Usuarios</h1>
+        <h1 className="text-2xl font-bold text-gray-800">Gestión de Usuarios</h1>
         <button
           onClick={refresh}
           className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
