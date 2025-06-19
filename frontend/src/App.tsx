@@ -7,15 +7,15 @@ import UsersPage from './pages/UsersPage';
 import ProfilePage from './pages/ProfilePage';
 import BookshelfPage from './pages/BookshelfPage';
 import Layout from './components/Layout';
+import ColorPaletteDemo from './components/ColorPaletteDemo';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
-// Componente para proteger rutas que requieren autenticación
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, loading } = useAuth();
   
   if (loading) {
-    return <div className="flex justify-center items-center h-screen">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+    return <div className="flex justify-center items-center h-screen bg-secondary">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
     </div>;
   }
   
@@ -33,6 +33,7 @@ function AppRoutes() {
         {/* Rutas públicas */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/demo" element={<ColorPaletteDemo />} />
         
         {/* Rutas protegidas */}
         <Route path="/books" element={<BooksPage />} />

@@ -6,13 +6,36 @@ interface BookCardProps {
 
 export function BookCard({ book }: BookCardProps) {
   return (
-    <div className="bg-white rounded shadow p-4 flex flex-col gap-2 border hover:shadow-lg transition">
-      <h2 className="text-lg font-bold">{book.title}</h2>
-      <p className="text-gray-700">Autor: {book.author}</p>
-      <p className="text-gray-500 text-sm">ISBN: {book.isbn}</p>
-      <p className="text-gray-500 text-sm">Editorial: {book.publisher}</p>
-      <p className="text-gray-500 text-sm">Idioma: {book.language}</p>
-      <p className="text-gray-400 text-xs">Publicado: {new Date(book.publishedAt).toLocaleDateString()}</p>
+    <div className="card group cursor-pointer transform transition-all duration-200 hover:-translate-y-1">
+      <div className="flex flex-col gap-3">
+        <div className="flex items-start justify-between">
+          <h2 className="text-xl font-bold text-text group-hover:text-primary transition-colors duration-200 line-clamp-2">
+            📖 {book.title}
+          </h2>
+        </div>
+        
+        <div className="space-y-2">
+          <p className="text-text-light font-medium">
+            <span className="text-primary font-semibold">👨‍💼 Autor:</span> {book.author}
+          </p>
+          <p className="text-text-lighter text-sm">
+            <span className="text-primary font-semibold">📚 ISBN:</span> {book.isbn}
+          </p>
+          <p className="text-text-lighter text-sm">
+            <span className="text-primary font-semibold">🏢 Editorial:</span> {book.publisher}
+          </p>
+          <p className="text-text-lighter text-sm">
+            <span className="text-primary font-semibold">🌍 Idioma:</span> {book.language}
+          </p>
+        </div>
+        
+        <div className="pt-2 border-t border-neutral-300">
+          <p className="text-text-lighter text-xs flex items-center">
+            <span className="text-sky-600 mr-1">📅</span>
+            Publicado: {new Date(book.publishedAt).toLocaleDateString('es-ES')}
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

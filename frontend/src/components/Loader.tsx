@@ -1,13 +1,15 @@
 interface LoaderProps {
   size?: 'sm' | 'md' | 'lg';
-  color?: 'blue' | 'gray' | 'green' | 'red';
+  color?: 'primary' | 'accent' | 'sky' | 'neutral';
   fullScreen?: boolean;
+  text?: string;
 }
 
 export default function Loader({ 
   size = 'md', 
-  color = 'blue',
-  fullScreen = false 
+  color = 'primary',
+  fullScreen = false,
+  text = 'Cargando...'
 }: Readonly<LoaderProps>) {
   const sizeClasses = {
     sm: 'h-6 w-6',
@@ -16,20 +18,29 @@ export default function Loader({
   };
   
   const colorClasses = {
-    blue: 'border-blue-500',
-    gray: 'border-gray-500',
-    green: 'border-green-500',
-    red: 'border-red-500'
+    primary: 'border-primary',
+    accent: 'border-accent',
+    sky: 'border-sky',
+    neutral: 'border-neutral-600'
   };
 
   const spinner = (
-    <div className={`border-t-2 border-b-2 ${colorClasses[color]} rounded-full animate-spin ${sizeClasses[size]}`}></div>
+    <div className="flex flex-col items-center space-y-3">
+      <div className={`border-t-2 border-b-2 ${colorClasses[color]} rounded-full animate-spin ${sizeClasses[size]}`}></div>
+      {text && (
+        <p className="text-text-light font-medium text-sm animate-pulse">
+          {text}
+        </p>
+      )}
+    </div>
   );
 
   if (fullScreen) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
-        {spinner}
+      <div className="fixed inset-0 flex items-center justify-center bg-secondary bg-opacity-90 backdrop-blur-sm z-50">
+        <div className="bg-white rounded-xl p-8 shadow-medium">
+          {spinner}
+        </div>
       </div>
     );
   }
