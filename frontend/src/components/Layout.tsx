@@ -29,7 +29,9 @@ export default function Layout({ children }: Readonly<LayoutProps>) {
             {isAuthenticated ? (
               <>
                 <Link to="/bookshelfs" className="link text-white hover:text-secondary-200">Estanterías</Link>
-                <Link to="/users" className="link text-white hover:text-secondary-200">Usuarios</Link>
+                {currentUser?.role === 'ADMIN' && (
+                  <Link to="/users" className="link text-white hover:text-secondary-200">Usuarios</Link>
+                )}
                 <div className="relative group">
                   <button className="flex items-center text-white hover:text-secondary-200 transition-colors font-medium">
                     <span>👤 {currentUser?.firstName ?? 'Usuario'}</span>

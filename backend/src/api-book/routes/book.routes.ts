@@ -9,7 +9,6 @@ export class BookRouter extends BaseRouter<BookController> {
   protected setRoutes(): void {
     this.router.post('/', (req, res) => this.controller.createBook(req, res));
     this.router.post('/add-to-bookshelf', (req, res) => this.controller.addBookToBookshelfOrCreate(req, res));
-    this.router.post('/userbook', (req, res) => this.controller.addUserBook(req, res));
     this.router.put('/:id', (req, res) => this.controller.updateBook(req, res));
     this.router.delete('/:id', (req, res) => this.controller.deleteBook(req, res));
     this.router.get('/', (req, res) => this.controller.getAllBooks(req, res));

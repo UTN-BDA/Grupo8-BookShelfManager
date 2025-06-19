@@ -90,28 +90,6 @@ export class BookController {
             ErrorResponse.handleError(res, error);
         }
     }
-
-    async addUserBook(req: Request, res: Response): Promise<void> {
-        try {
-            const { userId, title, author, isbn, pages, publisher, language, publishedAt, notes } = req.body;
-            const { createUserBook } = await import('../services/userbook.service');
-            const userBook = await createUserBook({
-                userId,
-                title,
-                author,
-                isbn,
-                pages,
-                publisher,
-                language,
-                publishedAt: new Date(publishedAt),
-                notes
-            });
-            res.status(201).json(userBook);
-        } catch (error) {
-            ErrorResponse.handleError(res, error);
-        }
-    }
-
 }
 
 export default new BookController();
