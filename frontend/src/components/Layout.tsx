@@ -74,7 +74,7 @@ export default function Layout({ children }: Readonly<LayoutProps>) {
             &copy; 2025 BookShelf Manager. Todos los derechos reservados.
           </p>
           <p className="text-text-lighter text-xs mt-2">
-            Desarrollado con ❤️ para los amantes de los libros
+            Desarrollado por estudiantes de Ingenieria en Sistemas
           </p>
         </div>
       </footer>
