@@ -9,15 +9,25 @@ export default function BooksPage() {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [searchValue, setSearchValue] = useState('');
+  // Filtros
+  const [showFilters, setShowFilters] = useState(false);
+  const [selectedAuthor, setSelectedAuthor] = useState('');
+  const [selectedLanguage, setSelectedLanguage] = useState('');
 
-  // Filtrado en frontend
+  // Obtener autores e idiomas únicos
+  const authors = Array.from(new Set(books.map(b => b.author)));
+  const languages = Array.from(new Set(books.map(b => b.language)));
+
+  // Lógica de filtrado mejorada
   const filteredBooks = books.filter(book => {
     const q = search.trim().toLowerCase();
-    return (
+    const matchesSearch =
       book.title.toLowerCase().includes(q) ||
       book.author.toLowerCase().includes(q) ||
-      book.isbn.toLowerCase().includes(q)
-    );
+      book.isbn.toLowerCase().includes(q);
+    const matchesAuthor = selectedAuthor ? book.author === selectedAuthor : true;
+    const matchesLanguage = selectedLanguage ? book.language === selectedLanguage : true;
+    return matchesSearch && matchesAuthor && matchesLanguage;
   });
 
   return (
@@ -52,10 +62,77 @@ export default function BooksPage() {
             <button className="btn-primary whitespace-nowrap" onClick={() => setSearch(searchValue)}>
               Buscar
             </button>
-            <button className="btn-outline whitespace-nowrap">
+            <button className="btn-outline whitespace-nowrap" onClick={() => setShowFilters(v => !v)}>
               Filtros
             </button>
           </div>
+          {/* Filtros desplegables */}
+          {showFilters && (
+            <div className="mt-4 flex flex-col sm:flex-row gap-4">
+              <div className="relative">
+                <label className="block text-sm mb-1" htmlFor="filter-author-autocomplete">Autor</label>
+                <input
+                  className="input"
+                  id="filter-author-autocomplete"
+                  type="text"
+                  placeholder="Escribe un autor..."
+                  value={selectedAuthor}
+                  onChange={e => setSelectedAuthor(e.target.value)}
+                  autoComplete="off"
+                />
+                {/* Sugerencias de autores */}
+                {selectedAuthor && authors.filter(a => a.toLowerCase().includes(selectedAuthor.toLowerCase()) && a !== selectedAuthor).length > 0 && (
+                  <ul className="absolute z-10 bg-white border border-gray-200 rounded w-full mt-1 max-h-40 overflow-y-auto shadow-lg">
+                    {authors
+                      .filter(a => a.toLowerCase().includes(selectedAuthor.toLowerCase()) && a !== selectedAuthor)
+                      .slice(0, 10)
+                      .map(author => (
+                        <li key={author} className="px-0 py-0">
+                          <button
+                            type="button"
+                            className="w-full text-left px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                            onClick={() => setSelectedAuthor(author)}
+                            onKeyDown={e => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                setSelectedAuthor(author);
+                              }
+                            }}
+                          >
+                            {author}
+                          </button>
+                        </li>
+                      ))}
+                  </ul>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm mb-1" htmlFor="filter-language">Idioma</label>
+                <select
+                  className="input"
+                  id="filter-language"
+                  value={selectedLanguage}
+                  onChange={e => setSelectedLanguage(e.target.value)}
+                >
+                  <option value="">Todos</option>
+                  {languages.map(lang => (
+                    <option key={lang} value={lang}>{lang}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex items-end">
+                <button
+                  className="btn-outline"
+                  onClick={() => {
+                    setSelectedAuthor('');
+                    setSelectedLanguage('');
+                  }}
+                  type="button"
+                >
+                  Limpiar filtros
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Content */}
