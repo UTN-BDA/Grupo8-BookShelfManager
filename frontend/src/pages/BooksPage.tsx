@@ -2,10 +2,23 @@ import { useBooks } from '../hooks/useBooks';
 import { useNavigate } from 'react-router-dom';
 import { BookCard } from '../components/BookCard';
 import Loader from '../components/Loader';
+import { useState } from 'react';
 
 export default function BooksPage() {
   const { books, loading, error } = useBooks();
   const navigate = useNavigate();
+  const [search, setSearch] = useState('');
+  const [searchValue, setSearchValue] = useState('');
+
+  // Filtrado en frontend
+  const filteredBooks = books.filter(book => {
+    const q = search.trim().toLowerCase();
+    return (
+      book.title.toLowerCase().includes(q) ||
+      book.author.toLowerCase().includes(q) ||
+      book.isbn.toLowerCase().includes(q)
+    );
+  });
 
   return (
     <div className="min-h-screen bg-secondary py-8">
@@ -28,9 +41,15 @@ export default function BooksPage() {
                 type="text" 
                 className="input" 
                 placeholder="🔍 Buscar libros por título, autor o ISBN..."
+                value={searchValue}
+                onChange={e => setSearchValue(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') setSearch(searchValue);
+                }}
+                aria-label="Buscar libros"
               />
             </div>
-            <button className="btn-primary whitespace-nowrap">
+            <button className="btn-primary whitespace-nowrap" onClick={() => setSearch(searchValue)}>
               Buscar
             </button>
             <button className="btn-outline whitespace-nowrap">
@@ -56,18 +75,25 @@ export default function BooksPage() {
         )}
 
         {/* Books Grid */}
-        {books.length > 0 && (
+        {filteredBooks.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {books.map(book => (
-              <div key={book.id} onClick={() => navigate(`/books/${book.id}`)}>
+            {filteredBooks.map(book => (
+              <button
+                key={book.id}
+                type="button"
+                onClick={() => navigate(`/books/${book.id}`)}
+                style={{ cursor: 'pointer', background: 'none', border: 'none', padding: 0, textAlign: 'inherit' }}
+                aria-label={`Ver detalles del libro ${book.title}`}
+                className="text-left w-full"
+              >
                 <BookCard book={book} />
-              </div>
+              </button>
             ))}
           </div>
         )}
 
         {/* Empty State */}
-        {books.length === 0 && !loading && !error && (
+        {filteredBooks.length === 0 && !loading && !error && (
           <div className="text-center py-16">
             <div className="text-6xl mb-4">📖</div>
             <h3 className="heading-3 text-text-light mb-2">
@@ -76,9 +102,6 @@ export default function BooksPage() {
             <p className="text-text-lighter mb-6">
               Parece que aún no hay libros en la biblioteca.
             </p>
-            <button className="btn-primary">
-              Agregar Primer Libro
-            </button>
           </div>
         )}
 
