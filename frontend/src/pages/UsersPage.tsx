@@ -2,10 +2,15 @@ import { useUsers } from '../hooks/useUsers';
 import { useAuth } from '../context/AuthContext';
 import UserCard from '../components/UserCard';
 import type { User } from '../services/userService';
+import EditUserModal from '../components/EditUserModal';
+import { useState } from 'react';
+import { userService } from '../services/userService';
 
 export default function UsersPage() {
   const { currentUser } = useAuth();
   const { users, loading, error, deleteUser, refresh } = useUsers();
+  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   // Only admin allows access to this page
   if (currentUser?.role !== 'ADMIN') {
@@ -29,7 +34,25 @@ export default function UsersPage() {
   };
 
   const handleEdit = (user: User) => {
-    alert(`Editar usuario: ${user.firstName} ${user.lastName}`);
+    setEditingUser(user);
+    setModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+    setEditingUser(null);
+  };
+
+  const handleModalSave = async (updatedFields: Partial<User>) => {
+    if (!editingUser) return;
+    try {
+      await userService.updateUser(editingUser.id, updatedFields);
+      refresh();
+      setModalOpen(false);
+      setEditingUser(null);
+    } catch (err) {
+      alert('Error al actualizar el usuario');
+    }
   };
 
   if (loading) {
@@ -80,6 +103,12 @@ export default function UsersPage() {
           <p className="text-gray-500 text-center py-8">No hay usuarios para mostrar</p>
         )}
       </div>
+      <EditUserModal
+        user={editingUser as User}
+        isOpen={modalOpen}
+        onClose={handleModalClose}
+        onSave={handleModalSave}
+      />
     </div>
   );
 }

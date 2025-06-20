@@ -59,9 +59,16 @@ export default function BooksPage() {
         {books.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {books.map(book => (
-              <div key={book.id} onClick={() => navigate(`/books/${book.id}`)}>
+              <button
+                key={book.id}
+                type="button"
+                onClick={() => navigate(`/books/${book.id}`)}
+                style={{ cursor: 'pointer', background: 'none', border: 'none', padding: 0, textAlign: 'inherit' }}
+                aria-label={`Ver detalles del libro ${book.title}`}
+                className="text-left w-full"
+              >
                 <BookCard book={book} />
-              </div>
+              </button>
             ))}
           </div>
         )}
@@ -76,9 +83,6 @@ export default function BooksPage() {
             <p className="text-text-lighter mb-6">
               Parece que aún no hay libros en la biblioteca.
             </p>
-            <button className="btn-primary">
-              Agregar Primer Libro
-            </button>
           </div>
         )}
 
