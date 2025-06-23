@@ -9,6 +9,7 @@ export type Book = {
   publishedAt: Date;
   createdAt: Date;
   updatedAt: Date;
+  createdBy?: string | null;
 };
 
 export type CreateBookParams = {
@@ -19,6 +20,7 @@ export type CreateBookParams = {
   publisher: string;
   language: string;
   publishedAt: Date;
+  createdBy?: string | null;
 };
 
 export type UpdateBookParams = Partial<Omit<Book, 'id' | 'createdAt' | 'updatedAt'>>;
