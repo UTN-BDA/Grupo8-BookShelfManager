@@ -20,9 +20,11 @@ api.interceptors.request.use(
       if (user?.token) {
         config.headers['Authorization'] = `Bearer ${user.token}`;
       }
-
-      if (user?.id) {
-        config.headers['x-user-id'] = user.id;
+      // Agrega los headers de usuario para endpoints que los requieren
+      const url = config.url ?? '';
+      if (url.includes('/book/cover') || url.includes('/book/reviews')) {
+        if (user?.id) config.headers['x-user-id'] = user.id;
+        if (user?.username) config.headers['x-username'] = user.username;
       }
     }
     return config;

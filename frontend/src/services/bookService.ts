@@ -9,6 +9,7 @@ export interface Book {
   publisher: string;
   language: string;
   publishedAt: string;
+  createdBy: string; 
 }
 
 export const bookService = {
