@@ -143,7 +143,7 @@ export default function BookshelfDetailPage() {
                 className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm font-semibold shadow"
                 onClick={() => setShowGlobalBookModal(true)}
               >
-                + Buscar libro global y agregar
+                + Agregar libro existente
               </button>
             </div>
             <h2 className="text-xl font-semibold mb-6">Libros en esta biblioteca:</h2>
