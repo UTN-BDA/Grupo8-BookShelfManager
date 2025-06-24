@@ -17,13 +17,20 @@
     "search:bitmap": "npx ts-node scripts/tests/bitmap-index.ts",
     "search:fulltext": "npx ts-node scripts/tests/fulltext-index.ts",
     "search:composite": "npx ts-node scripts/tests/composite-index.ts",
-    "search:noindex": "npx ts-node scripts/tests/no-index.ts"
+    "search:noindex": "npx ts-node scripts/tests/no-index.ts",
+    
+    "backup": "npx ts-node scripts/backup.ts create",
+    "backup:list": "npx ts-node scripts/backup.ts list",
+    "restore:dev": "npx ts-node scripts/restore.ts dev",
+    "restore:file": "npx ts-node scripts/restore.ts file",
+    "backup:test": "npx ts-node scripts/test.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.1",
     "express": "^4.18.2",
+    "mongoose": "^8.16.0",
     "perf_hooks": "^0.0.1"
   },
   "devDependencies": {

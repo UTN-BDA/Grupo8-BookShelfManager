@@ -9,6 +9,7 @@ import BookshelfPage from './pages/BookshelfPage';
 import Layout from './components/Layout';
 import ColorPaletteDemo from './components/ColorPaletteDemo';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import BookshelfDetailPage from './pages/BookshelfDetailPage';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -49,6 +50,7 @@ function AppRoutes() {
           </ProtectedRoute>
         } />
         <Route path="/bookshelfs" element={<BookshelfPage />} />
+        <Route path="/bookshelf/:id" element={<BookshelfDetailPage />} />
         
         {/* Redirecciones */}
         <Route path="/libros" element={<Navigate to="/books" />} />

@@ -8,17 +8,53 @@ export const createBookshelf = async ({ userId, name, description }: CreateBooks
 };
 
 export const getBookshelfsByUser = async (userId: string) => {
-  return prisma.bookshelf.findMany({
+  // Trae todas las bibliotecas del usuario y formatea igual que getBookshelfById
+  const bookshelfs = await prisma.bookshelf.findMany({
     where: { userId },
     include: { books: { include: { book: true } } },
   });
+  return bookshelfs.map((bookshelf: any) => ({
+    id: bookshelf.id,
+    name: bookshelf.name,
+    description: bookshelf.description,
+    books: bookshelf.books.map((bb: any) => ({
+      id: bb.book.id,
+      title: bb.book.title,
+      author: bb.book.author,
+      isbn: bb.book.isbn,
+      pages: bb.book.pages,
+      publisher: bb.book.publisher,
+      language: bb.book.language,
+      publishedAt: bb.book.publishedAt,
+      createdBy: bb.book.createdBy,
+    })),
+  }));
 };
 
 export const getBookshelfById = async (id: string) => {
-  return prisma.bookshelf.findUnique({
+  // Obtenemos la biblioteca y los libros relacionados
+  const bookshelf = await prisma.bookshelf.findUnique({
     where: { id },
     include: { books: { include: { book: true } } },
   });
+  if (!bookshelf) return null;
+  // Formateamos la respuesta para que el array books contenga los datos completos del libro
+  return {
+    id: bookshelf.id,
+    name: bookshelf.name,
+    description: bookshelf.description,
+    books: bookshelf.books.map((bb: any) => ({
+      id: bb.book.id,
+      title: bb.book.title,
+      author: bb.book.author,
+      isbn: bb.book.isbn,
+      pages: bb.book.pages,
+      publisher: bb.book.publisher,
+      language: bb.book.language,
+      publishedAt: bb.book.publishedAt,
+      createdBy: bb.book.createdBy,
+    })),
+  };
 };
 
 export const updateBookshelf = async (id: string, { name, description }: { name: string; description: string }) => {

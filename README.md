@@ -110,6 +110,44 @@ Por defecto corre en `http://localhost:5173`
 
 ---
 
+# 🗂️ Sistema de Backup & Restore
+
+Como parte de los requisitos de **Base de Datos Avanzada**, el proyecto incluye un sistema de Backup & Restore mediante scripts.
+
+## 🚀 Comandos Disponibles
+
+```bash
+cd backend
+
+# Crear backup de la base de datos
+npm run backup
+
+# Listar backups disponibles
+npm run backup:list
+
+# Restaurar base de datos de desarrollo (REQUISITO PRINCIPAL)
+npm run restore:dev
+
+# Restaurar desde archivo específico
+npm run restore:file <archivo>
+
+# Probar el sistema completo
+npm run backup:test
+```
+
+## 📁 Ubicación de Archivos
+
+- **Scripts:** `backend/scripts/backup.ts` y `backend/scripts/restore.ts`
+- **Backups:** `backend/backups/`
+- **Documentación:** `backend/scripts/README.md`
+
+## 🎯 Cumplimiento del Requisito
+
+El comando `npm run restore:dev` cumple específicamente con el requisito:
+> "Backup & Restore mediante scripts que permite restaurar la DB de desarrollo"
+
+---
+
 # Scripts Útiles
 
 ## Backend
