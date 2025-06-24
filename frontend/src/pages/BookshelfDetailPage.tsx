@@ -116,14 +116,22 @@ export default function BookshelfDetailPage() {
           <div className="text-center py-16">
             <div className="text-6xl mb-4">📖</div>
             <h3 className="heading-3 text-text-light mb-2">
-              No hay libros en esta biblioteca
+              Aún no hay libros en esta biblioteca
             </h3>
             <p className="text-text-lighter mb-6">
-              Puedes agregar libros a esta biblioteca desde la página de libros.
+              Puedes agregar libros a continuación.
             </p>
-            <button className="btn-primary" onClick={() => navigate(-1)}>
-              ← Volver
-            </button>
+            <div className="flex justify-center gap-2">
+              <button className="btn-primary" onClick={() => navigate(-1)}>
+                ← Volver
+              </button>
+              <button
+                className="btn-primary bg-green-600 hover:bg-green-700"
+                onClick={() => setShowGlobalBookModal(true)}
+              >
+                + Agregar libro
+              </button>
+            </div>
           </div>
         ) : (
           <div className="card">

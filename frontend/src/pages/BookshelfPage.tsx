@@ -18,10 +18,6 @@ export default function BookshelfPage() {
   const [selectedBookId, setSelectedBookId] = useState<string>('');
   const [addBookError, setAddBookError] = useState<string | null>(null);
   const [addBookLoading, setAddBookLoading] = useState(false);
-  const [showGlobalBookModal, setShowGlobalBookModal] = useState(false);
-  const [globalBookId, setGlobalBookId] = useState('');
-  const [globalBookError, setGlobalBookError] = useState<string | null>(null);
-  const [globalBookLoading, setGlobalBookLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -90,35 +86,6 @@ export default function BookshelfPage() {
     }
   }
 
-  async function handleAddGlobalBook() {
-    if (!globalBookId) {
-      setGlobalBookError('Selecciona un libro');
-      return;
-    }
-    if (!currentUser || bookshelfs.length === 0) return;
-    setGlobalBookLoading(true);
-    setGlobalBookError(null);
-    try {
-      // Por defecto, agregar a la primera estantería del usuario
-      await bookshelfService.addBookToBookshelf({
-        bookshelfId: bookshelfs[0].id,
-        bookId: globalBookId,
-        userId: currentUser.id,
-        status: 'pendiente',
-        notes: '',
-      });
-      // Refrescar estanterías
-      const updated = await bookshelfService.getBookshelfsByUser(currentUser.id);
-      setBookshelfs(updated);
-      setShowGlobalBookModal(false);
-      setGlobalBookId('');
-    } catch {
-      setGlobalBookError('No se pudo agregar el libro');
-    } finally {
-      setGlobalBookLoading(false);
-    }
-  }
-
   const handleBookAdded = async () => {
     if (!currentUser) return;
     // Refresca las estanterías para actualizar el contador
@@ -164,12 +131,7 @@ export default function BookshelfPage() {
           </button>
         </form>
         <div className="flex justify-center mb-4 gap-1 sm:gap-2">
-          <button
-            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
-            onClick={() => setShowGlobalBookModal(true)}
-          >
-            + Buscar libro global y agregar
-          </button>
+          {/* Eliminar botón de agregar libro global aquí, solo dejar el de subir libro propio */}
           <button
             className="px-4 py-2 bg-blue-800 text-white rounded hover:bg-blue-900 text-sm"
             onClick={() => setShowAddBookModal('own')}
@@ -242,41 +204,6 @@ export default function BookshelfPage() {
                 disabled={addBookLoading}
               >
                 {addBookLoading ? 'Agregando...' : 'Agregar libro'}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Modal para agregar libro global */}
-        {showGlobalBookModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative">
-              <button
-                className="absolute top-2 right-2 text-gray-400 hover:text-gray-700"
-                onClick={() => { setShowGlobalBookModal(false); setGlobalBookId(''); setGlobalBookError(null); }}
-                aria-label="Cerrar"
-              >
-                ×
-              </button>
-              <h3 className="text-lg font-bold mb-4">Agregar libro global a tu perfil</h3>
-              <select
-                className="w-full mb-4 border rounded p-2"
-                value={globalBookId}
-                onChange={e => setGlobalBookId(e.target.value)}
-                disabled={globalBookLoading}
-              >
-                <option value="">Selecciona un libro</option>
-                {allBooks.map(book => (
-                  <option key={book.id} value={book.id}>{book.title}</option>
-                ))}
-              </select>
-              {globalBookError && <p className="text-red-500 text-sm mb-2">{globalBookError}</p>}
-              <button
-                className="w-full py-2 px-4 bg-green-600 text-white font-semibold rounded-md shadow hover:bg-green-700 transition"
-                onClick={handleAddGlobalBook}
-                disabled={globalBookLoading}
-              >
-                {globalBookLoading ? 'Agregando...' : 'Agregar libro'}
               </button>
             </div>
           </div>
