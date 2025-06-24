@@ -18,6 +18,7 @@ export default function BookshelfPage() {
   const [selectedBookId, setSelectedBookId] = useState<string>('');
   const [addBookError, setAddBookError] = useState<string | null>(null);
   const [addBookLoading, setAddBookLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -131,7 +132,7 @@ export default function BookshelfPage() {
           </button>
         </form>
         <div className="flex justify-center mb-4 gap-1 sm:gap-2">
-          {/* Eliminar botón de agregar libro global aquí, solo dejar el de subir libro propio */}
+          
           <button
             className="px-4 py-2 bg-blue-800 text-white rounded hover:bg-blue-900 text-sm"
             onClick={() => setShowAddBookModal('own')}
@@ -153,59 +154,113 @@ export default function BookshelfPage() {
           } else {
             bookshelfContent = (
               <ul className="space-y-4">
-                {bookshelfs.map(bs => (
-                  <li key={bs.id} className="bg-blue-50 rounded-lg p-4 border border-blue-100 flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                      <h2 className="text-lg font-bold text-blue-800">{bs.name}</h2>
-                      {bs.description && <p className="text-gray-600 text-sm mb-2">{bs.description}</p>}
-                      <p className="text-gray-500 text-xs mb-2">Libros guardados: {bs.books.length}</p>
-                    </div>
-                    <button
-                      className="mt-2 sm:mt-0 sm:ml-4 px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-900 text-sm self-end sm:self-auto"
-                      onClick={() => navigate(`/bookshelf/${bs.id}`)}
-                    >
-                      Ver biblioteca completa
-                    </button>
-                  </li>
-                ))}
+                {bookshelfs.map(bs => {
+                  // Filtrado para mostrar solo los libros que no están en esta biblioteca
+                  const filteredGlobalBooks = allBooks.filter(
+                    b => !bs.books.some(book => book.id === b.id)
+                  );
+                  return (
+                    <li key={bs.id} className="bg-blue-50 rounded-lg p-4 border border-blue-100 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                      <div>
+                        <h2 className="text-lg font-bold text-blue-800">{bs.name}</h2>
+                        {bs.description && <p className="text-gray-600 text-sm mb-2">{bs.description}</p>}
+                        <p className="text-gray-500 text-xs mb-2">Libros guardados: {bs.books.length}</p>
+                      </div>
+                      <div className="flex gap-2 mt-2 sm:mt-0 sm:ml-4">
+                        <button
+                          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm font-semibold shadow"
+                          onClick={() => {
+                            setShowAddBookModal(bs.id);
+                            setSelectedBookId('');
+                            setAddBookError(null);
+                          }}
+                        >
+                          + Agregar libro existente
+                        </button>
+                        <button
+                          className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-900 text-sm self-end sm:self-auto"
+                          onClick={() => navigate(`/bookshelf/${bs.id}`)}
+                        >
+                          Ver biblioteca completa
+                        </button>
+                      </div>
+                      {/* Modal para agregar libro existente a esta biblioteca */}
+                      {showAddBookModal === bs.id && (
+                        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+                          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative">
+                            <button
+                              className="absolute top-2 right-2 text-gray-400 hover:text-gray-700"
+                              onClick={() => { setShowAddBookModal(null); setSelectedBookId(''); setAddBookError(null); }}
+                              aria-label="Cerrar"
+                            >
+                              ×
+                            </button>
+                            <h3 className="text-lg font-bold mb-4">Agregar libro existente a esta biblioteca</h3>
+                            <select
+                              className="w-full mb-4 border rounded p-2"
+                              value={selectedBookId}
+                              onChange={e => setSelectedBookId(e.target.value)}
+                              disabled={addBookLoading}
+                            >
+                              <option value="">Selecciona un libro</option>
+                              {filteredGlobalBooks.map(book => (
+                                <option key={book.id} value={book.id}>{book.title}</option>
+                              ))}
+                            </select>
+                            {addBookError && <p className="text-red-500 text-sm mb-2">{addBookError}</p>}
+                            <button
+                              className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md shadow hover:bg-blue-700 transition"
+                              onClick={async () => {
+                                if (!selectedBookId) {
+                                  setAddBookError('Selecciona un libro');
+                                  return;
+                                }
+                                if (!currentUser) {
+                                  setAddBookError('Debes iniciar sesión');
+                                  return;
+                                }
+                                setAddBookLoading(true);
+                                setAddBookError(null);
+                                try {
+                                  await bookshelfService.addBookToBookshelf({
+                                    bookshelfId: bs.id,
+                                    bookId: selectedBookId,
+                                    userId: currentUser.id,
+                                    status: 'pendiente',
+                                    notes: '',
+                                  });
+                                  const updated = await bookshelfService.getBookshelfsByUser(currentUser.id);
+                                  setBookshelfs(updated);
+                                  setShowAddBookModal(null);
+                                  setSelectedBookId('');
+                                  setSuccessMessage('Libro agregado correctamente a la biblioteca.');
+                                  setTimeout(() => setSuccessMessage(null), 2500);
+                                } catch {
+                                  setAddBookError('No se pudo agregar el libro');
+                                } finally {
+                                  setAddBookLoading(false);
+                                }
+                              }}
+                              disabled={addBookLoading}
+                            >
+                              {addBookLoading ? 'Agregando...' : 'Agregar libro'}
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             );
           }
           return <div>{bookshelfContent}</div>;
         })()}
 
-        {/* Modal para agregar libro */}
-        {showAddBookModal && showAddBookModal !== 'own' && (
-          <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative">
-              <button
-                className="absolute top-2 right-2 text-gray-400 hover:text-gray-700"
-                onClick={() => { setShowAddBookModal(null); setSelectedBookId(''); setAddBookError(null); }}
-                aria-label="Cerrar"
-              >
-                ×
-              </button>
-              <h3 className="text-lg font-bold mb-4">Agregar libro a la estantería</h3>
-              <select
-                className="w-full mb-4 border rounded p-2"
-                value={selectedBookId}
-                onChange={e => setSelectedBookId(e.target.value)}
-                disabled={addBookLoading}
-              >
-                <option value="">Selecciona un libro</option>
-                {allBooks.map(book => (
-                  <option key={book.id} value={book.id}>{book.title}</option>
-                ))}
-              </select>
-              {addBookError && <p className="text-red-500 text-sm mb-2">{addBookError}</p>}
-              <button
-                className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md shadow hover:bg-blue-700 transition"
-                onClick={() => handleAddBook(showAddBookModal)}
-                disabled={addBookLoading}
-              >
-                {addBookLoading ? 'Agregando...' : 'Agregar libro'}
-              </button>
-            </div>
+        {/* Mensaje de éxito */}
+        {successMessage && (
+          <div className="fixed top-6 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-6 py-3 rounded shadow-lg z-50">
+            {successMessage}
           </div>
         )}
 
