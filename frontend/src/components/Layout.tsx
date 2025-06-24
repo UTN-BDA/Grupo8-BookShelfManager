@@ -28,7 +28,7 @@ export default function Layout({ children }: Readonly<LayoutProps>) {
             
             {isAuthenticated ? (
               <>
-                <Link to="/bookshelfs" className="link text-white hover:text-secondary-200">Estanterías</Link>
+                <Link to="/bookshelfs" className="link text-white hover:text-secondary-200">Bibliotecas</Link>
                 {currentUser?.role === 'ADMIN' && (
                   <Link to="/users" className="link text-white hover:text-secondary-200">Usuarios</Link>
                 )}
