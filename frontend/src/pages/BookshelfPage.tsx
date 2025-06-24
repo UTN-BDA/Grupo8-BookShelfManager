@@ -54,6 +54,7 @@ export default function BookshelfPage() {
       setBookshelfs((prev) => [...prev, newBs]);
       setName('');
       setDescription('');
+      navigate(`/bookshelf/${newBs.id}`);
     } catch {
       setError('No se pudo crear la biblioteca.');
     } finally {
@@ -126,7 +127,7 @@ export default function BookshelfPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-start py-12 px-4">
+    <div className="min-h-screen flex flex-col items-center justify-start py-12 px-4" style={{ backgroundColor: '#FFECCC' }}>
       <div className="w-full max-w-2xl bg-white rounded-xl shadow-md p-8">
         <h1 className="text-3xl font-bold mb-8 text-center text-blue-700 tracking-tight">Mis Bibliotecas</h1>
         <form onSubmit={handleCreate} className="mb-8 space-y-4">
@@ -135,7 +136,7 @@ export default function BookshelfPage() {
             <input
               id="bookshelf-name"
               type="text"
-              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              className="block w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
               value={name}
               onChange={e => setName(e.target.value)}
               required
@@ -146,7 +147,7 @@ export default function BookshelfPage() {
             <label htmlFor="bookshelf-description" className="block text-sm font-medium text-gray-700 mb-1">Descripción (opcional)</label>
             <textarea
               id="bookshelf-description"
-              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              className="block w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
               value={description}
               onChange={e => setDescription(e.target.value)}
               rows={2}
@@ -162,7 +163,7 @@ export default function BookshelfPage() {
             {loading ? 'Creando...' : 'Crear biblioteca'}
           </button>
         </form>
-        <div className="flex justify-end mb-4 gap-2">
+        <div className="flex justify-center mb-4 gap-1 sm:gap-2">
           <button
             className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
             onClick={() => setShowGlobalBookModal(true)}
@@ -174,12 +175,6 @@ export default function BookshelfPage() {
             onClick={() => setShowAddBookModal('own')}
           >
             + Subir libro propio
-          </button>
-          <button
-            className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-900 text-sm"
-            onClick={() => navigate('/books')}
-          >
-            Ver colección completa
           </button>
         </div>
         {/*
@@ -197,10 +192,18 @@ export default function BookshelfPage() {
             bookshelfContent = (
               <ul className="space-y-4">
                 {bookshelfs.map(bs => (
-                  <li key={bs.id} className="bg-blue-50 rounded-lg p-4 border border-blue-100">
-                    <h2 className="text-lg font-bold text-blue-800">{bs.name}</h2>
-                    {bs.description && <p className="text-gray-600 text-sm mb-2">{bs.description}</p>}
-                    <p className="text-gray-500 text-xs mb-2">Libros guardados: {bs.books.length}</p>
+                  <li key={bs.id} className="bg-blue-50 rounded-lg p-4 border border-blue-100 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <h2 className="text-lg font-bold text-blue-800">{bs.name}</h2>
+                      {bs.description && <p className="text-gray-600 text-sm mb-2">{bs.description}</p>}
+                      <p className="text-gray-500 text-xs mb-2">Libros guardados: {bs.books.length}</p>
+                    </div>
+                    <button
+                      className="mt-2 sm:mt-0 sm:ml-4 px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-900 text-sm self-end sm:self-auto"
+                      onClick={() => navigate(`/bookshelf/${bs.id}`)}
+                    >
+                      Ver biblioteca completa
+                    </button>
                   </li>
                 ))}
               </ul>
