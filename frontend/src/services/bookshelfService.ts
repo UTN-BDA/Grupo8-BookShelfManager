@@ -4,7 +4,17 @@ export interface Bookshelf {
   id: string;
   name: string;
   description?: string;
-  books: Array<{ id: string; title: string }>;
+  books: Array<{
+    id: string;
+    title: string;
+    author?: string;
+    isbn?: string;
+    pages?: number;
+    publisher?: string;
+    language?: string;
+    publishedAt?: string;
+    createdBy?: string;
+  }>;
 }
 
 export interface CreateBookshelfDto {
@@ -46,5 +56,14 @@ export const bookshelfService = {
   }) {
     const res = await api.post('/books/add-to-bookshelf', payload);
     return res.data;
+  },
+
+  async getBookshelfById(id: string): Promise<Bookshelf> {
+    const res = await api.get<Bookshelf>(`/bookshelfs/${id}`);
+    return res.data;
+  },
+
+  async removeBookFromBookshelf({ bookshelfId, bookId, userId }: { bookshelfId: string; bookId: string; userId: string }) {
+    return api.delete(`/bookshelfs/${bookshelfId}/books/${bookId}`, { data: { userId } });
   },
 };
