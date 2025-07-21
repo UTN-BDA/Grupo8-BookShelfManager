@@ -65,9 +65,12 @@ export const updateBookshelf = async (id: string, { name, description }: { name:
 };
 
 export const deleteBookshelf = async (id: string) => {
-  // Elimina primero los BookshelfBook relacionados
-  await prisma.bookshelfBook.deleteMany({ where: { bookshelfId: id } });
-  return prisma.bookshelf.delete({ where: { id } });
+  // MODIFICACIÓN: Las dos operaciones ahora se ejecutan dentro de una transacción.
+  // Si una falla, la otra se revierte.
+  return prisma.$transaction([
+    prisma.bookshelfBook.deleteMany({ where: { bookshelfId: id } }),
+    prisma.bookshelf.delete({ where: { id } }),
+  ]);
 };
 
 export const addBookToBookshelf = async ({ bookshelfId, bookId, userId, status, notes }: AddBookToBookshelfDto) => {
