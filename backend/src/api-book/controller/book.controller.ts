@@ -67,25 +67,24 @@ export class BookController {
         }
     }
 
+    // MÉTODO MODIFICADO PARA USAR EL SERVICIO TRANSACCIONAL
     async addBookToBookshelfOrCreate(req: Request, res: Response): Promise<void> {
         try {
             const { bookshelfId, userId, status, notes, book } = req.body;
-            // Convertir publishedAt a Date si es string
+            
             if (book.publishedAt && typeof book.publishedAt === 'string') {
                 book.publishedAt = new Date(book.publishedAt);
             }
-            // Buscar libro por ISBN
-            let foundBook = await bookService.findBookByISBN(book.isbn);
-            foundBook ??= await bookService.createBook(book);
-            // Asociar a la estantería
-            const bookshelfBook = await (await import('../../api-bookshelf/services/bookshelf.service')).addBookToBookshelf({
+
+            const result = await bookService.findOrCreateAndAddToBookshelf(
+                book,
                 bookshelfId,
-                bookId: foundBook.id,
                 userId,
                 status,
                 notes
-            });
-            res.status(201).json({ book: foundBook, bookshelfBook });
+            );
+
+            res.status(201).json(result);
         } catch (error) {
             ErrorResponse.handleError(res, error);
         }
