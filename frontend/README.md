@@ -8,7 +8,7 @@ Este frontend está construido con **React**, **TypeScript**, **Vite** y **Tailw
 - **Reseñas y valoraciones**: Ver y gestionar reseñas de libros (MongoDB)
 - **Portadas personalizadas**: Visualizar portadas de libros (MongoDB)
 - **Colección personal**: Organizar y visualizar la colección de libros
-- **Gestión de usuarios**: Ver perfiles de otros usuarios del sistema
+- **Gestión de usuarios**: Ver perfiles de otros usuarios del sistema 
 
 ## Estructura
 
