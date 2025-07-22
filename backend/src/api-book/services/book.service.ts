@@ -58,14 +58,12 @@ export class BookService {
       });
 
       // 2. Si no existe, crearlo dentro de la misma transacción
-      if (!book) {
-        book = await tx.book.create({
+      book ??= await tx.book.create({
           data: {
             ...bookData,
             createdBy: bookData.createdBy ?? null,
           },
         });
-      }
 
       // 3. Asociar el libro a la estantería en la misma transacción
       const bookshelfBook = await tx.bookshelfBook.create({
